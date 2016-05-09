@@ -1,19 +1,19 @@
 [KDWM1000](https://github.com/KitSprout/KDWM1000)
 ========
 * Author  : [Hom](http://about.me/Hom)
-* Version : v1.2
-* Update  : 2016/04/23
+* Version : v1.4
+* Update  : 2016/05/10
 
 Description
 ========
-KDWM1000 是一款結合 UWB 與 [SmartIMU](https://github.com/Hom-Wang/SmartIMU) 的 Local Positioning System (LPS) 開發板。
+KDWM1000 是一款結合 [SmartIMU](https://github.com/Hom-Wang/SmartIMU)與 Decawave UWB DWM1000 模組的 Local Positioning System (LPS) 開發板，定位精度可達 10cm。
 
 License
 ========
 * 硬體(Hardware)採用 [CC BY-SA 4.0](http://creativecommons.org/licenses/by-sa/4.0/deed.zh_TW)  方式授權 
   
 　　<a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/deed.zh_TW"><img alt="創用 CC 授權條款" style="border-width:0" src="http://i.creativecommons.org/l/by-sa/3.0/tw/80x15.png" /></a>  
-　　<span xmlns:dct="http://purl.org/dc/terms/" property="dct:title"> KDWM1000 v1.2 </span>由<a xmlns:cc="http://creativecommons.org/ns#" href="http://about.me/Hom" property="cc:attributionName" rel="cc:attributionURL"> Hom </a>製作，以<a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/deed.zh_TW"> 創用CC 姓名標示-相同方式分享 4.0 國際 授權條款 </a>釋出。  
+　　<span xmlns:dct="http://purl.org/dc/terms/" property="dct:title"> KDWM1000 v1.4 </span>由<a xmlns:cc="http://creativecommons.org/ns#" href="http://about.me/Hom" property="cc:attributionName" rel="cc:attributionURL"> Hom </a>製作，以<a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/deed.zh_TW"> 創用CC 姓名標示-相同方式分享 4.0 國際 授權條款 </a>釋出。  
 
 * 軟體(Software)採用 [MIT License](http://opensource.org/licenses/MIT) 方式授權  
 
@@ -23,7 +23,7 @@ Hardware
 * 感測器　 : [MPU9250](http://www.invensense.com/products/motion-tracking/9-axis/mpu-9250/) + [LPS25HB](http://www2.st.com/content/st_com/en/products/mems-and-sensors/pressure-sensors/lps25hb.html)
 * UWB 　　 : DecaWave [DWM1000](http://www.decawave.com/products/dwm1000-module)
 * PCB 尺寸 : 25.4 x 45.72 mm
-* 設計軟體 [Altium Designer 16](http://www.altium.com/en/products/altium-designer) ( PcbLib use AD [PcbLib v2.4](https://github.com/KitSprout/AltiumDesigner_PcbLibrary/releases/tag/v2.4) )
+* 設計軟體 [Altium Designer 16](http://www.altium.com/en/products/altium-designer) ( PcbLib use AD [PcbLib v2.5](https://github.com/KitSprout/AltiumDesigner_PcbLibrary/releases/tag/v2.5) )
 
 Software
 ========
@@ -35,15 +35,15 @@ Related Documents
 
 View
 ========
-<img src="https://lh3.googleusercontent.com/hfC1cY4f4LyEm6jocEopPyitupuz2SWdHpx5pG51UHOzPzyu-IGUJnctck7kuXDpLfTiEJJiEDXWHV5DbATZtIri9zSbusFLophfJ7hVGYWIHMSJ9Hy099zwAS37Q_0nwLa-17BNRTCxRA-VPDLqutu5mftSmFSlO-cxJCt6gsQ00qWboiaO3YB1US9cXxu-j3MTbH3XZGEX6IgFHvNLhNiPweBx3UeRM3pBpfvwLJVKvxyOESgugQhG-VGzjeYmKFvUXjtHAwUPh3LHRq90zV1FizdxOLDbGmEvjwx-9G5iL-7a1lpZ-CiErsBIrtGRFm2YUBXNKWnmaNPwOjYpGswn3qNICKtXoJmJHh0CJvHbjHdQ4ZVM8JEqTaOrZ-BMIEbBwvsklNNbn_WKbCnvJRE09Y2WogaFaVAp5xVvNNIKashshaBD7yApL1pEOBFnbln5w5Q3Eod2T6fJrpJw2vnMcmbL4ctP5JghqqEOGVe9IYqM02oIgfLWwhBb3SeefpnbZx7ggmWNaWOPfQftVsjaG4W73uzx-rgcbWOmMtO0wOB2iRkkSTZM_rD7URN5U24Y=w991-h775-no"/>
+<img src="https://lh3.googleusercontent.com/PEMUZbxsGQjh9mXY4DUa30DgvgArqD3I6iGT5cQM8a-nl2qnhzmubBHcUcTzONuR-2Uc5u3-f37YL40YrMU2CAgXo2ikNupfziBY3_mw2xgCLUm4WW9inIFHDi2pj3dEJxUsErODDoxi1tudU6jp83poipBO4uGaLhmRtbwmb01rTuaiZvmK81-jx76okV8dLA4QROyGtN2Y1xYyo--nWoucPfBtuoXnqnHDjTcT9oqOTmX3E8k1SEhXMmUF3oKWfzjsbXJblWGtNEdritYrfg9JVcs12ffLV1f8LDzKZNRYzaU49YG4CUKEbGAWGltlK2M2l6K4eQ455IlzLYSMQfWTEs4dye2o5XjmpALQKBjusDAwERxabN1RdiC4MS5XZDddRj79H1u60a1XFM9fiy9v-8bb3z8UQBrmunRwKqBy0J5iIpmyD6I9HbJsnGeMd5kFGZ7FtOEZSotEZ__vKH2GBJ_n0EGl264HENnSP1cTfbeIAl2SEB_2kSWWQ-yHVS29l4_OxaD0O01yAnxihBYXJOWzkP3f2GItu8gQtfeHOSho3a8x0nBD_QKO2ZiynItM0SXpYbt7M5dLciuyOkkgMDLgneQ=w952-h775-no"/>
 
 <br />
 [more photo...](https://goo.gl/photos/sF6GmofmAzrM65vT7)
 
 Config
 ========
-<img src="https://lh3.googleusercontent.com/xCVi7yjRGhEWsW5hN0hOJbLEO5eyE8FvC_wav410RDv0N2I7RuzqLy6p3jOu08zG8zOZlFNdvKbBAmK4KOWqAbwnETNmyc4i9QMbXlnXIVu99clu1I4kYOZugItqZOXkhlYbGcLEurllwqxy6pGfa6YMQXP227c1cdGznX2bu-LPf6lbwzfYpCW4IBbkHJA4KuwN4pOV0vfxemP7yGfsr56lHVrl49lXzJx_Bu40oMHc-5uBoWEWB7WAP9oktrBmrb751Dcc3PvyTkPa56h2ZopwWr1Fu83dqqRQfRcKdx5zVVhl_4Xy90JadQibl9Vs1D3hRuIAp2XSkZOoWqVDGDHI_63szo6v5wpfj3EeRK3CzPULngH03ywA_FTEHePwNjhZkN-F8bXPfrwiixvIl-dQHlkdBFoSZpdxKvVt7BrRQTK7TARiIHi0vDcy6BVea1uoRDXoqxyqDGLwIm_whPRqjp2gc4BHgOsQJODTy0jq6lDJFFQANZSoJMxPCnYcEwtz3Ctks5lHdLq9ELIp_Vys79Qu14O5GW3e-dx1yGQKcqMROuCSS7IgCZtwihlJAzwH=w1440-h560-no"/>
+<img src="https://lh3.googleusercontent.com/UmZdUSpAXEuy0QbGTP-xQn7b7nQnqs4R4F27aYlREkYFF7WyPXajX6P3Bp3845o0tT8QSCH_qdDfHOsNQN6ADDyyJtPVSyfcFjXh455q3eHaw5sE42DYsKj-Ta1bNoYiwvv0A1CX3yG_XScOVHz-D4w-QwPEADneoW9WEyyV7CctmBNJQ9NUDu_RuRmcxZ9x3lBPBFX4WRJ14_TGVxG_tsjw6R6hSTxT-RPbHOAaFYkhL0hsa1nu_JsygrOlaANYl5JcljUwIMryMyle0cx3YJj-PZXtl-uVPlXNZSaEsVN3JmtEKBl2ZpiUo_AqCI14Xf8Rp2FWufrw9koQBnUC-RSadN_cpk8cO0KiMltR1hhBgAkrQsAf7C1tNBCniKhjZ14NvlydD84Tpnk3b5BH2_LRxkGCJt5TiBVDi5Fix_MkSI8yYyXd-3Do4k7MbNj_9g6ATkQknIfMqc7Gi1mnoTfhj1A5sWVYXB4oAJspUX7ANRyziAzSbvbV0LVIn9iXTHPqvDGOfa5H8szaqtBcBN8gXC06h18tt0l8YAYvfaI48VGWnFMMIubwCKI4RoQUOR5h3EgX1xD2fVzAqAYTEvbASeeBErw=w1440-h557-no"/>
 
 Schematic
 ========
-<img src="https://lh3.googleusercontent.com/srYciezWWgj7UO6zeaKSZprF6yrIWIOpOql5pTnG4TSxYeIAcjB3aMwCPkHL1hoo_qxz3Su7dFqUvReIsTP-RQpygJn6Lnowb6hBGMD-mph-4iDu7woOKTyBV9D_jSsO0DonAHIlCIXr3flObJIrqkLOY4y4NtfASDefIZ27d6U1Gk5PDj3YscpOQ_RscrozV4KT8iJiQyFVTxNlhI4bkxqZxLyGr9jZAMDD6V2TCg5Do26hOqovKVYva-YRPkxzci5POtfPHq5Jdv82P_mP3aS1JRHE5NzDsYRddoPTIiEgIJN8cfvsy8iS5tEYq84IuGi8FKyeh72NlxwLKxrB4-8WbL9vj8lzyCtjKKv4uMOs2kii2TAEZmlP_xqviopdqmeYqvwV0opS6qf4MRB-Nic1RURz55krI6QgzHnnzV6iCB_OgSRbKQQ1ce3qFXUdVo7byc8MLU8RnXDEtwbRUjClYdO8VcVV6FwlSQ8k5Oic2DpiSOmxiVTpt3tbdrgkENpC3vIQf-s7ztxN8HcCCh4xNzOBqKraoWaMxU-25bb3OnoTnmWd80OjJXaTuEdboc87=w1745-h1163-no"/>
+<img src="https://lh3.googleusercontent.com/eV37jmym7pjf8tgiNgVrQST6ZoaoZWAyXJSGDw2C4VinDUYk4kG5W9--yvUqpccakwVRYNCtt4uu1kCC0kO42bWFsKxGtQNi7XOSGB7Fyqw-et-4FM91xP0Egd2BuS1adyuDARf2LMRGIXGnYpmZGyYkhe8H9UELZRiyiG8FI-aL42l5ye3e3Yw0JJid3M9WW1aQgd72imf69QsrRRAdv9Q8rEg5JtPzzRQrxsM8G0eFtb5goLzo8Mu5Ihg1RSE1H6HCsoFSgg79idIHFNm_6JeoQvYmOh2sN8Dh_B7td-DzQ48UaQm53THC_RN_Qb7y962V-8XL6F0OY4OPH5pjVyBTiL9nKNjvGhZlmO78hgcQIfI2EuNEPJqdCGm01yADzzybgOlRUCANgWIUdHFftzyMTLRlp4fWsaPq_F_-YQZwZJDfuPMt3lWCthbpH5tDCAEiN33OOVB6fr_ex_o3oCqMDu4MNhh4L7E8T2TjyJ_flLLc1MqC96pq8yWp_qe98xsYwoXlUNjvJqaqHUcA7MV2Oc0myXn9RJn9PIo3QpbRY8Q4XDSTCUCDt-D0KGkUBlrf4oVdDqm6P4Fy-J58IAi5C9puvBI=w1163-h775-no"/>
