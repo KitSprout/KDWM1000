@@ -170,18 +170,26 @@ OutputDefault4=0
 PageOptions4=Record=PageOptions|CenterHorizontal=True|CenterVertical=True|PrintScale=1.00|XCorrection=1.00|YCorrection=1.00|PrintKind=1|BorderSize=5000000|LeftOffset=0|BottomOffset=0|Orientation=2|PaperLength=1000|PaperWidth=1000|Scale=100|PaperSource=7|PrintQuality=-4|MediaType=1|DitherType=10|PrintScaleMode=1|PaperKind=A4
 OutputType5=Composite
 OutputName5=Composite Drawing
-OutputDocumentPath5=E:\學術組\文宏\My Protel\STM32F103C8\STM32F103C8_PCB.PcbDoc
+OutputDocumentPath5=D:\My_Research\My_Design\Kit_KDWM1000\Hardware\Schematic v1.2\KDWM1000_Pcb.PcbDoc
 OutputVariantName5=
 OutputDefault5=0
-PageOptions5=Record=PageOptions|CenterHorizontal=True|CenterVertical=True|PrintScale=1.00|XCorrection=1.00|YCorrection=1.00|PrintKind=2|BorderSize=5000000|LeftOffset=0|BottomOffset=0|Orientation=2|PaperLength=1000|PaperWidth=1000|Scale=100|PaperSource=7|PrintQuality=-4|MediaType=1|DitherType=10|PrintScaleMode=0|PaperKind=A4
+PageOptions5=Record=PageOptions|CenterHorizontal=True|CenterVertical=True|PrintScale=1.00|XCorrection=1.00|YCorrection=1.00|PrintKind=2|BorderSize=5000000|LeftOffset=0|BottomOffset=0|Orientation=2|PaperLength=1000|PaperWidth=1000|Scale=100|PaperSource=7|PrintQuality=-3|MediaType=1|DitherType=10|PrintScaleMode=0|PaperKind=A4|PaperIndex=9
 Configuration5_Name1=OutputConfigurationParameter1
-Configuration5_Item1=PrintArea=SpecificArea|PrintAreaLowerLeftCornerX=27900000|PrintAreaLowerLeftCornerY=21300000|PrintAreaUpperRightCornerX=44800000|PrintAreaUpperRightCornerY=37100000|Record=PcbPrintView
+Configuration5_Item1=DesignatorDisplayMode=Physical|PrintArea=SpecificArea|PrintAreaLowerLeftCornerX=242200000|PrintAreaLowerLeftCornerY=194505120|PrintAreaUpperRightCornerX=307550000|PrintAreaUpperRightCornerY=229805120|Record=PcbPrintView
 Configuration5_Name2=OutputConfigurationParameter2
-Configuration5_Item2=IncludeBottomLayerComponents=True|IncludeMultiLayerComponents=True|IncludeTopLayerComponents=True|Index=0|Mirror=True|Name=Multilayer Composite Print|PadNumberFontSize=14|Record=PcbPrintOut|ShowHoles=True|ShowPadNets=False|ShowPadNumbers=False|SubstituteFonts=False
+Configuration5_Item2=IncludeBottomLayerComponents=True|IncludeMultiLayerComponents=True|IncludeTopLayerComponents=True|IncludeViewports=True|Index=0|Mirror=False|Name=Top Layer|PadNumberFontSize=14|Record=PcbPrintOut|ShowHoles=False|ShowPadNets=False|ShowPadNumbers=False|SubstituteFonts=False
 Configuration5_Name3=OutputConfigurationParameter3
-Configuration5_Item3=CArc=Full|CFill=Full|Comment=Full|Coordinate=Full|CPad=Full|CRegion=Full|CText=Full|CTrack=Full|CVia=Full|DDSymbolKind=0|DDSymbolSize=500000|DDSymbolSortKind=0|Designator=Full|Dimension=Full|DLayer1=TopLayer|DLayer2=BottomLayer|FArc=Full|FFill=Full|FPad=Full|FRegion=Full|FText=Full|FTrack=Full|FVia=Full|Layer=TopLayer|Polygon=Full|PrintOutIndex=0|Record=PcbPrintLayer
+Configuration5_Item3=CArc=Full|CFill=Full|Comment=Full|Coordinate=Full|CPad=Full|CRegion=Full|CText=Full|CTrack=Full|CVia=Full|DDSymbolKind=0|DDSymbolSize=500000|DDSymbolSortKind=0|Designator=Full|Dimension=Full|DLayer1=TopLayer|DLayer2=BottomLayer|FArc=Full|FFill=Full|FPad=Full|FRegion=Full|FText=Full|FTrack=Full|FVia=Full|Layer=MultiLayer|Polygon=Full|PrintOutIndex=0|Record=PcbPrintLayer
 Configuration5_Name4=OutputConfigurationParameter4
-Configuration5_Item4=CArc=Full|CFill=Full|Comment=Full|Coordinate=Full|CPad=Full|CRegion=Full|CText=Full|CTrack=Full|CVia=Full|DDSymbolKind=0|DDSymbolSize=500000|DDSymbolSortKind=0|Designator=Full|Dimension=Full|DLayer1=TopLayer|DLayer2=BottomLayer|FArc=Full|FFill=Full|FPad=Full|FRegion=Full|FText=Full|FTrack=Full|FVia=Full|Layer=KeepOutLayer|Polygon=Full|PrintOutIndex=0|Record=PcbPrintLayer
+Configuration5_Item4=CArc=Full|CFill=Full|Comment=Full|Coordinate=Full|CPad=Full|CRegion=Full|CText=Full|CTrack=Full|CVia=Full|DDSymbolKind=0|DDSymbolSize=500000|DDSymbolSortKind=0|Designator=Full|Dimension=Full|DLayer1=TopLayer|DLayer2=BottomLayer|FArc=Full|FFill=Full|FPad=Full|FRegion=Full|FText=Full|FTrack=Full|FVia=Full|Layer=TopLayer|Polygon=Full|PrintOutIndex=0|Record=PcbPrintLayer
+Configuration5_Name5=OutputConfigurationParameter5
+Configuration5_Item5=CArc=Full|CFill=Full|Comment=Full|Coordinate=Full|CPad=Full|CRegion=Full|CText=Full|CTrack=Full|CVia=Full|DDSymbolKind=0|DDSymbolSize=500000|DDSymbolSortKind=0|Designator=Full|Dimension=Full|DLayer1=TopLayer|DLayer2=BottomLayer|FArc=Full|FFill=Full|FPad=Full|FRegion=Full|FText=Full|FTrack=Full|FVia=Full|Layer=Mechanical1|Polygon=Full|PrintOutIndex=0|Record=PcbPrintLayer
+Configuration5_Name6=OutputConfigurationParameter6
+Configuration5_Item6=CArc=Full|CFill=Full|Comment=Full|Coordinate=Full|CPad=Full|CRegion=Full|CText=Full|CTrack=Full|CVia=Full|DDSymbolKind=0|DDSymbolSize=500000|DDSymbolSortKind=0|Designator=Full|Dimension=Full|DLayer1=TopLayer|DLayer2=BottomLayer|FArc=Full|FFill=Full|FPad=Full|FRegion=Full|FText=Full|FTrack=Full|FVia=Full|Layer=Mechanical13|Polygon=Full|PrintOutIndex=0|Record=PcbPrintLayer
+Configuration5_Name7=OutputConfigurationParameter7
+Configuration5_Item7=CArc=Full|CFill=Full|Comment=Full|Coordinate=Full|CPad=Full|CRegion=Full|CText=Full|CTrack=Full|CVia=Full|DDSymbolKind=0|DDSymbolSize=500000|DDSymbolSortKind=0|Designator=Full|Dimension=Full|DLayer1=TopLayer|DLayer2=BottomLayer|FArc=Full|FFill=Full|FPad=Full|FRegion=Full|FText=Full|FTrack=Full|FVia=Full|Layer=Mechanical14|Polygon=Full|PrintOutIndex=0|Record=PcbPrintLayer
+Configuration5_Name8=OutputConfigurationParameter8
+Configuration5_Item8=CArc=Full|CFill=Full|Comment=Full|Coordinate=Full|CPad=Full|CRegion=Full|CText=Full|CTrack=Full|CVia=Full|DDSymbolKind=0|DDSymbolSize=500000|DDSymbolSortKind=0|Designator=Full|Dimension=Full|DLayer1=TopLayer|DLayer2=BottomLayer|FArc=Full|FFill=Full|FPad=Full|FRegion=Full|FText=Full|FTrack=Full|FVia=Full|Layer=Mechanical15|Polygon=Full|PrintOutIndex=0|Record=PcbPrintLayer
 OutputType6=OpenBus Print
 OutputName6=OpenBus Prints
 OutputDocumentPath6=
@@ -214,7 +222,7 @@ OutputDefault10=0
 PageOptions10=Record=PageOptions|CenterHorizontal=True|CenterVertical=True|PrintScale=1.00|XCorrection=1.00|YCorrection=1.00|PrintKind=1|BorderSize=5000000|LeftOffset=0|BottomOffset=0|Orientation=2|PaperLength=1000|PaperWidth=1000|Scale=100|PaperSource=7|PrintQuality=-4|MediaType=1|DitherType=10|PrintScaleMode=1|PaperKind=A4
 OutputType11=Schematic Print
 OutputName11=Schematic Prints
-OutputDocumentPath11=D:\My_Research\My_Design\Kit_KDWM1000\Hardware\Schematic v1.0\KDWM1000_Sch.SchDoc
+OutputDocumentPath11=D:\My_Research\My_Design\Kit_KDWM1000\Hardware\Schematic v1.4\KDWM1000_Sch.SchDoc
 OutputVariantName11=
 OutputDefault11=0
 PageOptions11=Record=PageOptions|CenterHorizontal=True|CenterVertical=True|PrintScale=1.00|XCorrection=1.00|YCorrection=1.00|PrintKind=1|BorderSize=5000000|LeftOffset=0|BottomOffset=0|Orientation=2|PaperLength=1000|PaperWidth=1000|Scale=100|PaperSource=7|PrintQuality=-4|MediaType=1|DitherType=10|PrintScaleMode=1|PaperKind=A4
@@ -951,37 +959,42 @@ PartTypes=0
 Net1=NetName=PB6|NetColor=$00FF6EFF
 Net2=NetName=PB12|NetColor=$00FF6EFF
 Net3=NetName=D_SCK|NetColor=$0000BE00
-Net4=NetName=PA2|NetColor=$00FF6EFF
-Net5=NetName=SDO|NetColor=$00FF6E6E
+Net4=NetName=PB10|NetColor=$00FF6EFF
+Net5=NetName=PA2|NetColor=$00FF6EFF
 Net6=NetName=SDI|NetColor=$00FF6E6E
-Net7=NetName=SWCLK|NetColor=$006E6EFF
-Net8=NetName=LED_R|NetColor=clYellow
-Net9=NetName=D_IRQ|NetColor=$0000BE00
-Net10=NetName=D_WAKE|NetColor=$0000BE00
-Net11=NetName=PB14|NetColor=$00FF6EFF
-Net12=NetName=PB7|NetColor=$00FF6EFF
-Net13=NetName=D_SDI|NetColor=$0000BE00
-Net14=NetName=PA3|NetColor=$00FF6EFF
-Net15=NetName=CSB|NetColor=$00FF6E6E
-Net16=NetName=INTM|NetColor=$00FF6E6E
-Net17=NetName=LED_B|NetColor=clYellow
-Net18=NetName=D_SDO|NetColor=$0000BE00
-Net19=NetName=D_EXTON|NetColor=$0000BE00
-Net20=NetName=KEY|NetColor=clYellow
-Net21=NetName=USB.ID|NetColor=$00FFFF6E
-Net22=NetName=LED_G|NetColor=clYellow
-Net23=NetName=USB.DM|NetColor=$00FFFF6E
-Net24=NetName=USB.DP|NetColor=$00FFFF6E
-Net25=NetName=CSM|NetColor=$00FF6E6E
-Net26=NetName=SCK|NetColor=$00FF6E6E
-Net27=NetName=D_RST|NetColor=$0000BE00
-Net28=NetName=SWDIO|NetColor=$006E6EFF
-Net29=NetName=INTB|NetColor=$00FF6E6E
-Net30=NetName=D_CS|NetColor=$0000BE00
-Net31=NetName=D_GPIO7|NetColor=$0000BE00
-Net32=NetName=PB13|NetColor=$00FF6EFF
-Net33=NetName=PB15|NetColor=$00FF6EFF
-Net34=NetName=PA8|NetColor=$00FF6EFF
+Net7=NetName=SDO|NetColor=$00FF6E6E
+Net8=NetName=SWCLK|NetColor=$006E6EFF
+Net9=NetName=LED_R|NetColor=clYellow
+Net10=NetName=D_IRQ|NetColor=$0000BE00
+Net11=NetName=D_WAKE|NetColor=$0000BE00
+Net12=NetName=PB14|NetColor=$00FF6EFF
+Net13=NetName=PB7|NetColor=$00FF6EFF
+Net14=NetName=USB.DP|NetColor=$00FFFF6E
+Net15=NetName=D_SDI|NetColor=$0000BE00
+Net16=NetName=CSB|NetColor=$00FF6E6E
+Net17=NetName=INTM|NetColor=$00FF6E6E
+Net18=NetName=LED_B|NetColor=clYellow
+Net19=NetName=D_SDO|NetColor=$0000BE00
+Net20=NetName=D_EXTON|NetColor=$0000BE00
+Net21=NetName=KEY|NetColor=clYellow
+Net22=NetName=USB.ID|NetColor=$00FFFF6E
+Net23=NetName=LED_G|NetColor=clYellow
+Net24=NetName=USB.DM|NetColor=$00FFFF6E
+Net25=NetName=PA3|NetColor=$00FF6EFF
+Net26=NetName=USB.VB|NetColor=$00FFFF6E
+Net27=NetName=CSM|NetColor=$00FF6E6E
+Net28=NetName=SCK|NetColor=$00FF6E6E
+Net29=NetName=D_RST|NetColor=$0000BE00
+Net30=NetName=PB1|NetColor=$00FF6EFF
+Net31=NetName=SWDIO|NetColor=$006E6EFF
+Net32=NetName=D_GPIO4|NetColor=$0000BE00
+Net33=NetName=INTB|NetColor=$00FF6E6E
+Net34=NetName=D_CS|NetColor=$0000BE00
+Net35=NetName=D_GPIO7|NetColor=$0000BE00
+Net36=NetName=PB13|NetColor=$00FF6EFF
+Net37=NetName=PB15|NetColor=$00FF6EFF
+Net38=NetName=PA8|NetColor=$00FF6EFF
+Net39=NetName=PB2|NetColor=$00FF6EFF
 
 [Comparison Options]
 ComparisonOptions0=Kind=Net|MinPercent=75|MinMatch=3|ShowMatch=-1|Confirm=0|UseName=-1|InclAllRules=0
