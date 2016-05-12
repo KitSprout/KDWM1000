@@ -2,7 +2,6 @@
 /*====================================================================================================*/
 #include "drivers\stm32f4_system.h"
 
-#include "kdwm1000.h"
 #include "kdwm1000_bsp.h"
 /*====================================================================================================*/
 /*====================================================================================================*/
@@ -10,11 +9,10 @@ void KDWM_GPIO_Config( void )
 {
   GPIO_InitTypeDef GPIO_InitStruct;
 
-  /* GPIO Clk ******************************************************************/
-  LED_R_GPIO_CLK_ENABLE();
-  LED_G_GPIO_CLK_ENABLE();
-  LED_B_GPIO_CLK_ENABLE();
-  KEY_GPIO_CLK_ENABLE();
+  /* Enable all GPIO Clk *******************************************************/
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
 
   /* GPIO all analog input *****************************************************/
   GPIO_InitStruct.GPIO_Pin   = GPIO_Pin_All;

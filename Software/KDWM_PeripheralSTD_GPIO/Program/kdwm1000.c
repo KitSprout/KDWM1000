@@ -3,7 +3,6 @@
 #include "drivers\stm32f4_system.h"
 
 #include "kdwm1000.h"
-#include "kdwm1000_bsp.h"
 /*====================================================================================================*/
 /*====================================================================================================*/
 void KDWM_Init( void )
@@ -18,16 +17,26 @@ void KDWM_Init( void )
 void KDWM_Loop( void )
 {
   while(1) {
-    LED_R_Toggle();
+    LED_R_Reset();
+    LED_G_Set();
+    LED_B_Set();
     delay_ms(200);
-    LED_G_Toggle();
+    LED_R_Set();
+    LED_G_Reset();
+    LED_B_Set();
     delay_ms(200);
-    LED_B_Toggle();
+    LED_R_Set();
+    LED_G_Set();
+    LED_B_Reset();
     delay_ms(200);
     while(KEY_Read()) {
-      LED_R_Toggle();
-      LED_G_Toggle();
-      LED_B_Toggle();
+      LED_R_Set();
+      LED_G_Set();
+      LED_B_Set();
+      delay_ms(200);
+      LED_R_Reset();
+      LED_G_Reset();
+      LED_B_Reset();
       delay_ms(200);
     }
   }
