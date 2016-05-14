@@ -27,17 +27,17 @@ Hardware
 
 Software
 ========
-[KDWM_PeripheralSTD_ADC](https://github.com/KitSprout/KDWM1000/tree/master/Software/KDWM_PeripheralSTD_ADC)
-[KDWM_PeripheralSTD_CRC](https://github.com/KitSprout/KDWM1000/tree/master/Software/KDWM_PeripheralSTD_CRC)
-[KDWM_PeripheralSTD_EXTI](https://github.com/KitSprout/KDWM1000/tree/master/Software/KDWM_PeripheralSTD_EXTI)
-[KDWM_PeripheralSTD_FLASH](https://github.com/KitSprout/KDWM1000/tree/master/Software/KDWM_PeripheralSTD_FLASH)
-[KDWM_PeripheralSTD_GPIO](https://github.com/KitSprout/KDWM1000/tree/master/Software/KDWM_PeripheralSTD_GPIO)
-[KDWM_PeripheralSTD_TIM](https://github.com/KitSprout/KDWM1000/tree/master/Software/KDWM_PeripheralSTD_TIM)
-[KDWM_PeripheralSTD_UART](https://github.com/KitSprout/KDWM1000/tree/master/Software/KDWM_PeripheralSTD_UART)
-[KDWM_PeripheralSTD_UART-IntRecv](https://github.com/KitSprout/KDWM1000/tree/master/Software/KDWM_PeripheralSTD_UART-IntRecv)
-[KDWM_ModuleSTD_MPU9250-SPI](https://github.com/KitSprout/KDWM1000/tree/master/Software/KDWM_ModuleSTD_MPU9250-SPI)
-[KDWM_ModuleSTD_LPS25HB-SPI](https://github.com/KitSprout/KDWM1000/tree/master/Software/KDWM_ModuleSTD_LPS25HB-SPI)
-[KDWM_ApplicationSTD_FreeRTOS](https://github.com/KitSprout/KDWM1000/tree/master/Software/KDWM_ApplicationSTD_FreeRTOS)
+[KDWM_PeripheralSTD_ADC](https://github.com/KitSprout/KDWM1000/tree/master/Software/KDWM_PeripheralSTD_ADC)  
+[KDWM_PeripheralSTD_CRC](https://github.com/KitSprout/KDWM1000/tree/master/Software/KDWM_PeripheralSTD_CRC)  
+[KDWM_PeripheralSTD_EXTI](https://github.com/KitSprout/KDWM1000/tree/master/Software/KDWM_PeripheralSTD_EXTI)  
+[KDWM_PeripheralSTD_FLASH](https://github.com/KitSprout/KDWM1000/tree/master/Software/KDWM_PeripheralSTD_FLASH)  
+[KDWM_PeripheralSTD_GPIO](https://github.com/KitSprout/KDWM1000/tree/master/Software/KDWM_PeripheralSTD_GPIO)  
+[KDWM_PeripheralSTD_TIM](https://github.com/KitSprout/KDWM1000/tree/master/Software/KDWM_PeripheralSTD_TIM)  
+[KDWM_PeripheralSTD_UART](https://github.com/KitSprout/KDWM1000/tree/master/Software/KDWM_PeripheralSTD_UART)  
+[KDWM_PeripheralSTD_UART-IntRecv](https://github.com/KitSprout/KDWM1000/tree/master/Software/KDWM_PeripheralSTD_UART-IntRecv)  
+[KDWM_ModuleSTD_MPU9250-SPI](https://github.com/KitSprout/KDWM1000/tree/master/Software/KDWM_ModuleSTD_MPU9250-SPI)  
+[KDWM_ModuleSTD_LPS25HB-SPI](https://github.com/KitSprout/KDWM1000/tree/master/Software/KDWM_ModuleSTD_LPS25HB-SPI)  
+[KDWM_ApplicationSTD_FreeRTOS](https://github.com/KitSprout/KDWM1000/tree/master/Software/KDWM_ApplicationSTD_FreeRTOS)  
 
 Related Documents
 ========
