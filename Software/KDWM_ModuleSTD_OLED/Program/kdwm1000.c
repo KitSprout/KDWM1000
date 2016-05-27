@@ -1,6 +1,7 @@
 /*====================================================================================================*/
 /*====================================================================================================*/
 #include "drivers\stm32f4_system.h"
+#include "modules\module_ssd1331.h"
 
 #include "kdwm1000.h"
 /*====================================================================================================*/
@@ -17,29 +18,15 @@ void KDWM_Init( void )
 /*====================================================================================================*/
 void KDWM_Loop( void )
 {
+  uint8_t i = 0;
+
+  OLED_PutStr(CENTER(FONT8, "HELLO"), LINE(FONT8, 2), &FONT8, "HELLO", WHITE, BLACK);
+  OLED_PutStr(CENTER(FONT8, "WORD"),  LINE(FONT8, 3), &FONT8, "WORD",  WHITE, BLACK);
+
   while(1) {
-    LED_R_Reset();
-    LED_G_Set();
-    LED_B_Set();
+    OLED_PutNum(CENTER(FONT8, "   "), LINE(FONT8, 5), &FONT8, Type_D, 3, i++, WHITE, BLACK);
+    LED_G_Toggle();
     delay_ms(200);
-    LED_R_Set();
-    LED_G_Reset();
-    LED_B_Set();
-    delay_ms(200);
-    LED_R_Set();
-    LED_G_Set();
-    LED_B_Reset();
-    delay_ms(200);
-    while(KEY_Read()) {
-      LED_R_Set();
-      LED_G_Set();
-      LED_B_Set();
-      delay_ms(200);
-      LED_R_Reset();
-      LED_G_Reset();
-      LED_B_Reset();
-      delay_ms(200);
-    }
   }
 }
 /*====================================================================================================*/

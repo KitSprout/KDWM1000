@@ -6,13 +6,20 @@
 #include "stm32f4xx.h"
 /*=====================================================================================================*/
 /*=====================================================================================================*/
-extern const uint8_t  ASCII_NUM_5x7[][5];
-extern const uint8_t  ASCII_NUM_5x3[11][5];
-extern const uint8_t  ASCII_NUM_7x6[10][7];
-extern const uint8_t  ASCII_12x6[95][12];
-extern const uint8_t  ASCII_16x8[95][16];
+typedef enum {
+  dirH,
+  dirV
+} eFontType;
 
-extern const uint16_t ASCII_NUM_22x16[11][22];
+typedef struct {    
+  const uint8_t *table;
+  uint8_t height;
+  uint8_t width;
+  eFontType type;
+} sFONT;
+
+extern sFONT Font8x6;
+extern sFONT Font16x8;
 /*=====================================================================================================*/
 /*=====================================================================================================*/
 #endif
