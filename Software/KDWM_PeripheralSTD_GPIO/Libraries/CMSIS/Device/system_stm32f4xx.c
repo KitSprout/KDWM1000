@@ -54,9 +54,9 @@
   *-----------------------------------------------------------------------------
   *        APB2 Prescaler                         | 2
   *-----------------------------------------------------------------------------
-  *        HSE Frequency(Hz)                      | 25000000
+  *        HSE Frequency(Hz)                      | 8000000
   *-----------------------------------------------------------------------------
-  *        PLL_M                                  | 25
+  *        PLL_M                                  | 8
   *-----------------------------------------------------------------------------
   *        PLL_N                                  | 336
   *-----------------------------------------------------------------------------
@@ -101,9 +101,9 @@
   *-----------------------------------------------------------------------------
   *        APB2 Prescaler                         | 2
   *-----------------------------------------------------------------------------
-  *        HSE Frequency(Hz)                      | 25000000
+  *        HSE Frequency(Hz)                      | 8000000
   *-----------------------------------------------------------------------------
-  *        PLL_M                                  | 25
+  *        PLL_M                                  | 8
   *-----------------------------------------------------------------------------
   *        PLL_N                                  | 360
   *-----------------------------------------------------------------------------
@@ -183,7 +183,7 @@
   *=============================================================================
   *                Supported STM32F411xx/STM32F410xx devices
   *-----------------------------------------------------------------------------
-  *        System Clock source                    | PLL (HSI)
+  *        System Clock source                    | PLL (HSE)
   *-----------------------------------------------------------------------------
   *        SYSCLK(Hz)                             | 100000000
   *-----------------------------------------------------------------------------
@@ -195,7 +195,7 @@
   *-----------------------------------------------------------------------------
   *        APB2 Prescaler                         | 1
   *-----------------------------------------------------------------------------
-  *        HSI Frequency(Hz)                      | 16000000
+  *        HSE Frequency(Hz)                      | 16000000
   *-----------------------------------------------------------------------------
   *        PLL_M                                  | 16
   *-----------------------------------------------------------------------------
@@ -348,13 +348,13 @@
      through STLINK MCO pin of STM32F103 microcontroller. The frequency cannot be changed
      and is fixed at 8 MHz. 
      Hardware configuration needed for Nucleo Board:
-     – SB54, SB55 OFF
-     – R35 removed
-     – SB16, SB50 ON */
-/* #define USE_HSE_BYPASS */
+     ?SB54, SB55 OFF
+     ?R35 removed
+     ?SB16, SB50 ON */
+#define USE_HSE_BYPASS
 
 #if defined(USE_HSE_BYPASS)     
-#define HSE_BYPASS_INPUT_FREQUENCY   8000000
+#define HSE_BYPASS_INPUT_FREQUENCY   16000000
 #endif /* USE_HSE_BYPASS */    
 #endif /* STM32F410xx || STM32F411xE */
     
@@ -366,14 +366,14 @@
 /******************************************************************************/
 
 /************************* PLL Parameters *************************************/
-#if defined(STM32F40_41xxx) || defined(STM32F427_437xx) || defined(STM32F429_439xx) || defined(STM32F401xx) || defined(STM32F469_479xx)
+#if defined(STM32F401xx) || defined(STM32F469_479xx)
  /* PLL_VCO = (HSE_VALUE or HSI_VALUE / PLL_M) * PLL_N */
  #define PLL_M      25
-#elif defined (STM32F446xx)
+#elif defined (STM32F446xx) || defined(STM32F40_41xxx) || defined(STM32F427_437xx) || defined(STM32F429_439xx)
  #define PLL_M      8
 #elif defined (STM32F410xx) || defined (STM32F411xE)
  #if defined(USE_HSE_BYPASS)
-  #define PLL_M      8    
+  #define PLL_M      16    
  #else /* !USE_HSE_BYPASS */
   #define PLL_M      16
  #endif /* USE_HSE_BYPASS */
@@ -765,7 +765,8 @@ static void SetSysClock(void)
   __IO uint32_t StartUpCounter = 0, HSEStatus = 0;
   
   /* Enable HSE and HSE BYPASS */
-  RCC->CR |= ((uint32_t)RCC_CR_HSEON | RCC_CR_HSEBYP);
+  RCC->CR |= ((uint32_t)RCC_CR_HSEON);
+//  RCC->CR |= ((uint32_t)RCC_CR_HSEON | RCC_CR_HSEBYP);
  
   /* Wait till HSE is ready and if Time out is reached exit */
   do
