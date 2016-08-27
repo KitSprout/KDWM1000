@@ -102,19 +102,15 @@ void KDWM_IMU_Config( pFunc pTIMx )
 
   printf("IMU Init ... ");
 
-  IMU.MPU_GyrAcc_Enable   = MPU_GyrAcc_ENABLE;
-  IMU.MPU_Mag_Enable      = MPU_Mag_ENABLE;
-  IMU.LPS_PresTemp_Enable = LPS_PresTemp_ENABLE;
-
-  IMU_InitStruct.pIMU                          = &IMU;
-  IMU_InitStruct.InitMPU.MPU_Gyr_FullScale     = MPU_GyrFS_2000dps;
-  IMU_InitStruct.InitMPU.MPU_Gyr_LowPassFilter = MPU_GyrLPS_41Hz;
-  IMU_InitStruct.InitMPU.MPU_Acc_FullScale     = MPU_AccFS_4g;
-  IMU_InitStruct.InitMPU.MPU_Acc_LowPassFilter = MPU_AccLPS_41Hz;
-  IMU_InitStruct.InitMPU.MPU_Mag_FullScale     = MPU_MagFS_16b;
-  IMU_InitStruct.InitLPS.LPS_PresAVG           = LPS_PresAVG_8;
-  IMU_InitStruct.InitLPS.LPS_TempAVG           = LPS_TempAVG_8;
-  IMU_InitStruct.InitLPS.LPS_ODR               = LPS_ODR_12P5Hz;
+  IMU_InitStruct.Data                       = &IMU;
+  IMU_InitStruct.Init.MPU_Gyr_FullScale     = MPU_GyrFS_2000dps;
+  IMU_InitStruct.Init.MPU_Gyr_LowPassFilter = MPU_GyrLPS_41Hz;
+  IMU_InitStruct.Init.MPU_Acc_FullScale     = MPU_AccFS_4g;
+  IMU_InitStruct.Init.MPU_Acc_LowPassFilter = MPU_AccLPS_41Hz;
+  IMU_InitStruct.Init.MPU_Mag_FullScale     = MPU_MagFS_16b;
+//  IMU_InitStruct.InitLPS.LPS_PresAVG           = LPS_PresAVG_8;
+//  IMU_InitStruct.InitLPS.LPS_TempAVG           = LPS_TempAVG_8;
+//  IMU_InitStruct.InitLPS.LPS_ODR               = LPS_ODR_12P5Hz;
   if(IMU_Init(&IMU_InitStruct) != SUCCESS) {
     printf("ERROR\r\n");
     while(1) {
@@ -127,7 +123,7 @@ void KDWM_IMU_Config( pFunc pTIMx )
 
   /* Start timer ****************************************************************/
   TIM_ITConfig(TIM4, TIM_IT_Update, ENABLE);
-  TIM_Cmd(TIM4, ENABLE);
+//  TIM_Cmd(TIM4, ENABLE);
 }
 /*====================================================================================================*/
 /*====================================================================================================*/

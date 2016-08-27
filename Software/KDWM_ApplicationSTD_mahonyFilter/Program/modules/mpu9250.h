@@ -4,8 +4,12 @@
 #define __MPU9250_H
 
 #include "stm32f4xx.h"
+#include "algorithms\mathUnit.h"
 
+#define __USE_GYROSCOPE
+#define __USE_ACCELEROMETER
 #define __USE_MAGNETOMETER
+#define __USE_ICTEMPERATURE
 /*=====================================================================================================*/
 /*=====================================================================================================*/
 /*
@@ -74,44 +78,24 @@ typedef enum {
   MPU_AccFS_16g = 0x18
 } MPU_AccFS_TypeDef;
 
-#ifdef __USE_MAGNETOMETER
 typedef enum {
   MPU_MagFS_14b = 0x00,
   MPU_MagFS_16b = 0x10
 } MPU_MagFS_TypeDef;
-#endif
 
 typedef struct {
   MPU_GyrFS_TypeDef  MPU_Gyr_FullScale;
   MPU_GyrLPF_TypeDef MPU_Gyr_LowPassFilter;
   MPU_AccFS_TypeDef  MPU_Acc_FullScale;
   MPU_AccLPF_TypeDef MPU_Acc_LowPassFilter;
-#ifdef __USE_MAGNETOMETER
   MPU_MagFS_TypeDef  MPU_Mag_FullScale;
-#endif
 } MPU_ConfigTypeDef;
 
-
-/* ---- Sensitivity --------------------------------------------------------- */
-
-#define MPU9250A_2g       ((float)0.000061035156f)  // 0.000061035156 g/LSB
-#define MPU9250A_4g       ((float)0.000122070312f)  // 0.000122070312 g/LSB
-#define MPU9250A_8g       ((float)0.000244140625f)  // 0.000244140625 g/LSB
-#define MPU9250A_16g      ((float)0.000488281250f)  // 0.000488281250 g/LSB
-
-#define MPU9250G_250dps   ((float)0.007633587786f)  // 0.007633587786 dps/LSB
-#define MPU9250G_500dps   ((float)0.015267175572f)  // 0.015267175572 dps/LSB
-#define MPU9250G_1000dps  ((float)0.030487804878f)  // 0.030487804878 dps/LSB
-#define MPU9250G_2000dps  ((float)0.060975609756f)  // 0.060975609756 dps/LSB
-
-#define MPU9250M_4800uT   ((float)0.6f)             // 0.6 uT/LSB
-
-#define MPU9250T_85degC   ((float)0.002995177763f)  // 0.002995177763 degC/LSB
 
 /* ---- MPU6500 Reg In MPU9250 ---------------------------------------------- */
 
 #define MPU6500_I2C_ADDR            ((uint8_t)0xD0)
-#define MPU6500_DeviceID            ((uint8_t)0x71) // In MPU9250
+#define MPU6500_DeviceID            ((uint8_t)0x71)   /* In MPU9250 */
 
 #define MPU6500_SELF_TEST_XG        ((uint8_t)0x00)
 #define MPU6500_SELF_TEST_YG        ((uint8_t)0x01)
@@ -206,7 +190,7 @@ typedef struct {
 #define MPU6500_FIFO_COUNTH         ((uint8_t)0x72)
 #define MPU6500_FIFO_COUNTL         ((uint8_t)0x73)
 #define MPU6500_FIFO_R_W            ((uint8_t)0x74)
-#define MPU6500_WHO_AM_I            ((uint8_t)0x75) // ID = 0x71 In MPU9250
+#define MPU6500_WHO_AM_I            ((uint8_t)0x75)   /* ID = 0x71 In MPU9250 */
 #define MPU6500_XA_OFFSET_H         ((uint8_t)0x77)
 #define MPU6500_XA_OFFSET_L         ((uint8_t)0x78)
 #define MPU6500_YA_OFFSET_H         ((uint8_t)0x7A)
@@ -223,7 +207,7 @@ typedef struct {
 #define AK8963_I2C_ADDR             ((uint8_t)0x0C)
 #define AK8963_DeviceID             ((uint8_t)0x48)
 
-// Read-only Reg
+/* Read-only Reg */
 #define AK8963_WIA                  ((uint8_t)0x00)
 #define AK8963_INFO                 ((uint8_t)0x01)
 #define AK8963_ST1                  ((uint8_t)0x02)
@@ -234,18 +218,18 @@ typedef struct {
 #define AK8963_HZL                  ((uint8_t)0x07)
 #define AK8963_HZH                  ((uint8_t)0x08)
 #define AK8963_ST2                  ((uint8_t)0x09)
-// Write/Read Reg
+/* Write/Read Reg */
 #define AK8963_CNTL1                ((uint8_t)0x0A)
 #define AK8963_CNTL2                ((uint8_t)0x0B)
 #define AK8963_ASTC                 ((uint8_t)0x0C)
 #define AK8963_TS1                  ((uint8_t)0x0D)
 #define AK8963_TS2                  ((uint8_t)0x0E)
 #define AK8963_I2CDIS               ((uint8_t)0x0F)
-// Read-only Reg ( ROM )
+/* Read-only Reg ( ROM ) */
 #define AK8963_ASAX                 ((uint8_t)0x10)
 #define AK8963_ASAY                 ((uint8_t)0x11)
 #define AK8963_ASAZ                 ((uint8_t)0x12)
-// Status
+/* Status */
 #define AK8963_STATUS_DRDY          ((uint8_t)0x01)
 #define AK8963_STATUS_DOR           ((uint8_t)0x02)
 #define AK8963_STATUS_HOFL          ((uint8_t)0x08)

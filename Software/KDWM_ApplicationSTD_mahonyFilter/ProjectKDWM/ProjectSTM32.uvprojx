@@ -10,7 +10,7 @@
       <TargetName>KDWM1000</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>5060183::V5.06 update 2 (build 183)::ARMCC</pCCUsed>
+      <pCCUsed>5060300::V5.06 update 3 (build 300)::ARMCC</pCCUsed>
       <TargetOption>
         <TargetCommonOption>
           <Device>STM32F411CEUx</Device>
@@ -347,6 +347,7 @@
             <NoWarn>0</NoWarn>
             <uSurpInc>0</uSurpInc>
             <useXO>0</useXO>
+            <uClangAs>0</uClangAs>
             <VariousControls>
               <MiscControls></MiscControls>
               <Define></Define>
@@ -403,11 +404,6 @@
               <FilePath>..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_rcc.c</FilePath>
             </File>
             <File>
-              <FileName>stm32f4xx_flash.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_flash.c</FilePath>
-            </File>
-            <File>
               <FileName>stm32f4xx_tim.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_tim.c</FilePath>
@@ -441,11 +437,6 @@
               <FileName>stm32f4_delay.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Program\drivers\stm32f4_delay.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f4_flash.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Program\drivers\stm32f4_flash.c</FilePath>
             </File>
             <File>
               <FileName>stm32f4_usart.c</FileName>
@@ -488,39 +479,9 @@
           <GroupName>Application</GroupName>
           <Files>
             <File>
-              <FileName>imu_param.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Program\applications\imu_param.c</FilePath>
-            </File>
-            <File>
-              <FileName>imu_correction.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Program\applications\imu_correction.c</FilePath>
-            </File>
-            <File>
               <FileName>mahonyFilter.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Program\applications\mahonyFilter.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>Math</GroupName>
-          <Files>
-            <File>
-              <FileName>arm_common_tables.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Libraries\CMSIS\DSP_Lib\Source\CommonTables\arm_common_tables.c</FilePath>
-            </File>
-            <File>
-              <FileName>arm_sin_f32.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Libraries\CMSIS\DSP_Lib\Source\FastMathFunctions\arm_sin_f32.c</FilePath>
-            </File>
-            <File>
-              <FileName>arm_cos_f32.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Libraries\CMSIS\DSP_Lib\Source\FastMathFunctions\arm_cos_f32.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -542,11 +503,6 @@
               <FileType>1</FileType>
               <FilePath>..\Program\modules\mpu9250.c</FilePath>
             </File>
-            <File>
-              <FileName>lps25hb.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Program\modules\lps25hb.c</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>
@@ -556,11 +512,6 @@
               <FileName>string.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Program\algorithms\string.c</FilePath>
-            </File>
-            <File>
-              <FileName>matrix.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Program\algorithms\matrix.c</FilePath>
             </File>
             <File>
               <FileName>moveAve.c</FileName>

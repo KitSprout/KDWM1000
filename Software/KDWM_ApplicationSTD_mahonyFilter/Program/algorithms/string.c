@@ -30,7 +30,7 @@ void num2Str( StringType type, uint8_t lens, char *pStr, int32_t number )
       for(i = 0; i < lens; i++) {
         pStr[lens-i-1] = tmpStr[i] - tmpStr[i+1] * type;
         if(pStr[lens-i-1] > 9)
-          pStr[lens-i-1] += 55;	// 65-10
+          pStr[lens-i-1] += 55;	/* 65-10 */
         else
           pStr[lens-i-1] += 48;
       }

@@ -3,24 +3,15 @@
 #include "drivers\stm32f4_system.h"
 #include "drivers\stm32f4_spi.h"
 #include "modules\imu.h"
+
+#include <stdio.h>
+#include <string.h>
 /*====================================================================================================*/
 /*====================================================================================================*/
 #define IMU_SPIx                    SPI1
 #define IMU_SPIx_CLK_ENABLE()       RCC_APB2PeriphClockCmd(RCC_APB2Periph_SPI1, ENABLE)
 #define IMU_SPIx_SPEED_HIGH         SPI_BaudRatePrescaler_2
 #define IMU_SPIx_SPEED_LOW          SPI_BaudRatePrescaler_256
-
-#define IMU_CSM_PIN                 GPIO_Pin_4
-#define IMU_CSM_GPIO_PORT           GPIOA
-#define IMU_CSM_H()                 __GPIO_SET(IMU_CSM_GPIO_PORT, IMU_CSM_PIN)
-#define IMU_CSM_L()                 __GPIO_RST(IMU_CSM_GPIO_PORT, IMU_CSM_PIN)
-
-#ifdef __USE_BAROMETER
-#define IMU_CSB_PIN                 GPIO_Pin_0
-#define IMU_CSB_GPIO_PORT           GPIOB
-#define IMU_CSB_H()                 __GPIO_SET(IMU_CSB_GPIO_PORT, IMU_CSB_PIN)
-#define IMU_CSB_L()                 __GPIO_RST(IMU_CSB_GPIO_PORT, IMU_CSB_PIN)
-#endif
 
 #define IMU_SCK_PIN                 GPIO_Pin_5
 #define IMU_SCK_GPIO_PORT           GPIOA
@@ -37,19 +28,34 @@
 #define IMU_SDI_AF                  GPIO_AF_SPI1
 #define IMU_SDI_SOURCE              GPIO_PinSource7
 
+#define IMU_CSM_PIN                 GPIO_Pin_4
+#define IMU_CSM_GPIO_PORT           GPIOA
+#define IMU_CSM_H()                 __GPIO_SET(IMU_CSM_GPIO_PORT, IMU_CSM_PIN)
+#define IMU_CSM_L()                 __GPIO_RST(IMU_CSM_GPIO_PORT, IMU_CSM_PIN)
+
+//#if defined(__USE_BAROMETER)
+#define IMU_CSB_PIN                 GPIO_Pin_0
+#define IMU_CSB_GPIO_PORT           GPIOB
+#define IMU_CSB_H()                 __GPIO_SET(IMU_CSB_GPIO_PORT, IMU_CSB_PIN)
+#define IMU_CSB_L()                 __GPIO_RST(IMU_CSB_GPIO_PORT, IMU_CSB_PIN)
+//#endif
+
 #define IMU_INTM_PIN                GPIO_Pin_1
 #define IMU_INTM_GPIO_PORT          GPIOA
 #define IMU_INTM_IRQ                EXTI1_IRQn
 #define IMU_INTM_LINE               EXTI_Line1
 #define IMU_INTM_SOURCE             GPIO_PinSource1
 
-#ifdef __USE_BAROMETER
+#if defined(__USE_BAROMETER)
 #define IMU_INTB_PIN                GPIO_Pin_0
 #define IMU_INTB_GPIO_PORT          GPIOA
 #define IMU_INTB_IRQ                EXTI0_IRQn
 #define IMU_INTB_LINE               EXTI_Line0
 #define IMU_INTB_SOURCE             GPIO_PinSource0
 #endif
+/*====================================================================================================*/
+/*====================================================================================================*/
+IMU_DataTypeDef IMU;
 /*====================================================================================================*/
 /*====================================================================================================*
 **函數 : IMU_SetSpeed
@@ -59,7 +65,7 @@
 **使用 : IMU_SetSpeed(SPIx_SPEED_LOW);
 **====================================================================================================*/
 /*====================================================================================================*/
-void IMU_SetSpeed( uint8_t speedSel )
+static void IMU_SetSpeed( uint8_t speedSel )
 {
   SPI_InitTypeDef SPI_InitStruct;
 
@@ -77,113 +83,6 @@ void IMU_SetSpeed( uint8_t speedSel )
   SPI_Init(IMU_SPIx, &SPI_InitStruct);
 
   SPI_Cmd(IMU_SPIx, ENABLE); 
-}
-/*====================================================================================================*/
-/*====================================================================================================*
-**函數 : IMU_ClaerData
-**功能 : Clear Data
-**輸入 : *pIMU
-**輸出 : None
-**使用 : IMU_ClaerData(IMU);
-**====================================================================================================*/
-/*====================================================================================================*/
-void IMU_ClaerData( IMU_DataTypeDef *pIMU )
-{
-  for(uint8_t i = 0; i < 3; i++ ) {
-    pIMU->Gyr[i] = 0;
-    pIMU->Acc[i] = 0;
-    pIMU->GyrOffset[i] = 0;
-    pIMU->AccOffset[i] = 0;
-    pIMU->GyrF[i] = 0.0f;
-    pIMU->AccF[i] = 0.0f;
-#ifdef __USE_MAGNETOMETER
-    pIMU->Mag[i] = 0;
-    pIMU->MagASA[i] = 0;
-    pIMU->MagOffset[i] = 0;
-    pIMU->MagF[i] = 0.0f;
-#endif
-  }
-
-  pIMU->GyrGain[0] = 1.0f;
-  pIMU->GyrGain[1] = 1.0f;
-  pIMU->GyrGain[2] = 1.0f;
-
-  pIMU->AccGain[0] = 1.0f;
-  pIMU->AccGain[1] = 0.0f;
-  pIMU->AccGain[2] = 0.0f;
-  pIMU->AccGain[3] = 1.0f;
-  pIMU->AccGain[4] = 0.0f;
-  pIMU->AccGain[5] = 1.0f;
-
-  pIMU->GyrSens = 0.0f;
-  pIMU->AccSens = 0.0f;
-
-#ifdef __USE_MAGNETOMETER
-  pIMU->MagGain[0] = 1.0f;
-  pIMU->MagGain[1] = 0.0f;
-  pIMU->MagGain[2] = 0.0f;
-  pIMU->MagGain[3] = 1.0f;
-  pIMU->MagGain[4] = 0.0f;
-  pIMU->MagGain[5] = 1.0f;
-
-  pIMU->MagSens = 0.0f;
-#endif
-
-#ifdef __USE_BAROMETER
-  pIMU->Temp = 0;
-  pIMU->Pres = 0;
-  pIMU->TempOffset = 0;
-  pIMU->PresOffset = 0;
-  pIMU->TempGain = 1.0f;
-  pIMU->PresGain = 1.0f;
-
-  pIMU->TempSens = 0.0f;
-  pIMU->PresSens = 0.0f;
-  pIMU->TempF = 0.0f;
-  pIMU->PresF = 0.0f;
-#endif
-}
-/*====================================================================================================*/
-/*====================================================================================================*
-**函數 : IMU_SetSensitivity
-**功能 : Set Sensitivity
-**輸入 : *IMUx
-**輸出 : None
-**使用 : IMU_SetSensitivity(IMUx);
-**====================================================================================================*/
-/*====================================================================================================*/
-void IMU_SetSensitivity( IMU_InitTypeDef *IMUx )
-{
-  if(IMUx->pIMU->MPU_GyrAcc_Enable == MPU_GyrAcc_ENABLE) {
-    switch(IMUx->InitMPU.MPU_Gyr_FullScale) { // dps/LSB
-      case MPU_GyrFS_250dps:  IMUx->pIMU->GyrSens = MPU9250G_250dps;  break;
-      case MPU_GyrFS_500dps:  IMUx->pIMU->GyrSens = MPU9250G_500dps;  break;
-      case MPU_GyrFS_1000dps: IMUx->pIMU->GyrSens = MPU9250G_1000dps; break;
-      case MPU_GyrFS_2000dps: IMUx->pIMU->GyrSens = MPU9250G_2000dps; break;
-      default :               IMUx->pIMU->GyrSens = MPU9250G_250dps;  break;
-    }
-    switch(IMUx->InitMPU.MPU_Acc_FullScale) { // g/LSB
-      case MPU_AccFS_2g:  IMUx->pIMU->AccSens = MPU9250A_2g;  break;
-      case MPU_AccFS_4g:  IMUx->pIMU->AccSens = MPU9250A_4g;  break;
-      case MPU_AccFS_8g:  IMUx->pIMU->AccSens = MPU9250A_8g;  break;
-      case MPU_AccFS_16g: IMUx->pIMU->AccSens = MPU9250A_16g; break;
-      default :           IMUx->pIMU->AccSens = MPU9250A_2g;  break;
-    }
-    IMUx->pIMU->ICTempSens = MPU9250T_85degC; // degC/LSB
-  }
-
-#ifdef __USE_MAGNETOMETER
-  if(IMUx->pIMU->MPU_Mag_Enable == MPU_Mag_ENABLE) {
-    IMUx->pIMU->MagSens    = MPU9250M_4800uT; // uT/LSB
-  }
-#endif
-
-#ifdef __USE_BAROMETER
-  if(IMUx->pIMU->LPS_PresTemp_Enable == LPS_PresTemp_ENABLE) {
-    IMUx->pIMU->TempSens   = LPS25HB_T_degC;  // degC/LSB
-    IMUx->pIMU->PresSens   = LPS25HB_P_hPa;   // hPa/LSB
-  }
-#endif
 }
 /*====================================================================================================*/
 /*====================================================================================================*
@@ -218,10 +117,10 @@ void IMU_Config( void )
   GPIO_InitStruct.GPIO_Pin   = IMU_CSM_PIN;
   GPIO_Init(IMU_CSM_GPIO_PORT, &GPIO_InitStruct);
 
-#ifdef __USE_BAROMETER
+//#if defined(__USE_BAROMETER)
   GPIO_InitStruct.GPIO_Pin   = IMU_CSB_PIN;
   GPIO_Init(IMU_CSB_GPIO_PORT, &GPIO_InitStruct);
-#endif
+//#endif
 
   GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_AF;
   GPIO_InitStruct.GPIO_Speed = GPIO_Speed_100MHz;
@@ -249,9 +148,9 @@ void IMU_Config( void )
 //  GPIO_Init(IMU_INTB_GPIO_PORT, &GPIO_InitStruct);
 
   IMU_CSM_H();  // LOW ENABLE
-#ifdef __USE_BAROMETER
+//#if defined(__USE_BAROMETER)
   IMU_CSB_H();  // LOW ENABLE
-#endif
+//#endif
 
   /* INT NVIC ****************************************************************/
 //  NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
@@ -293,91 +192,93 @@ void IMU_Config( void )
 **====================================================================================================*/
 /*====================================================================================================*/
 #define MPU6500_InitRegNum 11
+#define AK8963_InitRegNum  5
 #define LPS25H_InitRegNum  2
 int8_t IMU_Init( IMU_InitTypeDef *IMUx )
 {
   int8_t status = ERROR;
-
-  uint8_t i = 0;
   uint8_t MPU6500_InitData[MPU6500_InitRegNum][2] = {
-    {0x80, MPU6500_PWR_MGMT_1},     // [0]  Reset Device
-    {0x04, MPU6500_PWR_MGMT_1},     // [1]  Clock Source
-    {0x10, MPU6500_INT_PIN_CFG},    // [2]  Set INT_ANYRD_2CLEAR
-    {0x01, MPU6500_INT_ENABLE},     // [3]  Set RAW_RDY_EN
-    {0x00, MPU6500_PWR_MGMT_2},     // [4]  Enable Acc & Gyro
-    {0x00, MPU6500_SMPLRT_DIV},     // [5]  Sample Rate Divider
-    {0x00, MPU6500_GYRO_CONFIG},    // [6]  default : +-250dps
-    {0x00, MPU6500_ACCEL_CONFIG},   // [7]  default : +-2G
-    {0x00, MPU6500_CONFIG},         // [8]  default : GyrLPS_250Hz
-    {0x00, MPU6500_ACCEL_CONFIG_2}, // [9]  default : AccLPS_460Hz
-    {0x30, MPU6500_USER_CTRL},      // [10] Set I2C_MST_EN, I2C_IF_DIS
+    {0x80, MPU6500_PWR_MGMT_1},     /* [0]  Reset Device                  */
+    {0x04, MPU6500_PWR_MGMT_1},     /* [1]  Clock Source                  */
+    {0x10, MPU6500_INT_PIN_CFG},    /* [2]  Set INT_ANYRD_2CLEAR          */
+    {0x01, MPU6500_INT_ENABLE},     /* [3]  Set RAW_RDY_EN                */
+    {0x00, MPU6500_PWR_MGMT_2},     /* [4]  Enable Acc & Gyro             */
+    {0x00, MPU6500_SMPLRT_DIV},     /* [5]  Sample Rate Divider           */
+    {0x00, MPU6500_GYRO_CONFIG},    /* [6]  default : +-250dps            */
+    {0x00, MPU6500_ACCEL_CONFIG},   /* [7]  default : +-2G                */
+    {0x00, MPU6500_CONFIG},         /* [8]  default : GyrLPS_250Hz        */
+    {0x00, MPU6500_ACCEL_CONFIG_2}, /* [9]  default : AccLPS_460Hz        */
+    {0x30, MPU6500_USER_CTRL},      /* [10] Set I2C_MST_EN, I2C_IF_DIS    */
+  };
+  uint8_t AK8963_InitData[AK8963_InitRegNum][2] = {
+    {0x01, AK8963_CNTL2},           /* [0]  Reset Device                  */
+    {0x00, AK8963_CNTL1},           /* [1]  Power-down mode               */
+    {0x0F, AK8963_CNTL1},           /* [2]  Fuse ROM access mode          */
+                                    /*      Read sensitivity adjustment   */
+    {0x00, AK8963_CNTL1},           /* [3]  Power-down mode               */
+    {0x06, AK8963_CNTL1},           /* [4]  Continuous measurement mode 2 */
   };
 
-  IMU_ClaerData(IMUx->pIMU);
+  IMU_InitData(IMUx->Data);
   IMU_SetSensitivity(IMUx);
 
-  MPU6500_InitData[6][0] = IMUx->InitMPU.MPU_Gyr_FullScale;       // MPU6500_GYRO_CONFIG
-  MPU6500_InitData[7][0] = IMUx->InitMPU.MPU_Acc_FullScale;       // MPU6500_ACCEL_CONFIG
-  MPU6500_InitData[8][0] = IMUx->InitMPU.MPU_Gyr_LowPassFilter;   // MPU6500_CONFIG
-  MPU6500_InitData[9][0] = IMUx->InitMPU.MPU_Acc_LowPassFilter;   // MPU6500_ACCEL_CONFIG_2
+  MPU6500_InitData[6][0] = IMUx->Init.MPU_Gyr_FullScale;       /* [6] MPU6500_GYRO_CONFIG */
+  MPU6500_InitData[7][0] = IMUx->Init.MPU_Acc_FullScale;       /* [7] MPU6500_ACCEL_CONFIG */
+  MPU6500_InitData[8][0] = IMUx->Init.MPU_Gyr_LowPassFilter;   /* [8] MPU6500_CONFIG */
+  MPU6500_InitData[9][0] = IMUx->Init.MPU_Acc_LowPassFilter;   /* [9] MPU6500_ACCEL_CONFIG_2 */
 
-  for(i = 0; i < MPU6500_InitRegNum; i++) {
+  for(uint32_t i = 0; i < MPU6500_InitRegNum; i++) {
     delay_ms(2);
     MPU9250_WriteReg(MPU6500_InitData[i][1], MPU6500_InitData[i][0]);
   }
 
   delay_ms(2);
-  status = IMU_DeviceCheck(IMUx->pIMU);
+  status = IMU_DeviceCheck(IMUx->Data);
   if(status != SUCCESS)
     return ERROR;
 
-  delay_ms(10);
+#if defined(__USE_MAGNETOMETER)
+  uint8_t ASA[3] = {0};
+  float32_t sensAdj[3] = {0};
 
-#ifdef __USE_MAGNETOMETER
-  uint8_t tmp[3] = {0};
+  AK8963_InitData[4][0] |= IMUx->Init.MPU_Mag_FullScale;        /* [4] AK8963_CNTL1 */
 
-  if(IMUx->pIMU->MPU_Mag_Enable == MPU_Mag_ENABLE) {
-    MPU9250_Mag_WriteReg(AK8963_CNTL2, 0x01);     // Reset Device
+  for(uint32_t i = 0; i < AK8963_InitRegNum; i++) {
     delay_ms(2);
-    MPU9250_Mag_WriteReg(AK8963_CNTL1, 0x10);     // Power-down mode
-    delay_ms(2);
-    MPU9250_Mag_WriteReg(AK8963_CNTL1, 0x1F);     // Fuse ROM access mode
-    delay_ms(2);
-    MPU9250_Mag_ReadRegs(AK8963_ASAX, tmp, 3);    // Read sensitivity adjustment values
-    delay_ms(2);
-    MPU9250_Mag_WriteReg(AK8963_CNTL1, 0x10);     // Power-down mode
-    delay_ms(2);
-
-    IMUx->pIMU->MagASA[0] = (int16_t)(tmp[0]) + 128;
-    IMUx->pIMU->MagASA[1] = (int16_t)(tmp[1]) + 128;
-    IMUx->pIMU->MagASA[2] = (int16_t)(tmp[2]) + 128;
-
-    MPU9250_WriteReg(MPU6500_I2C_MST_CTRL, 0x5D);
-    delay_ms(2);
-    MPU9250_WriteReg(MPU6500_I2C_SLV0_ADDR, AK8963_I2C_ADDR | 0x80);
-    delay_ms(2);
-    MPU9250_WriteReg(MPU6500_I2C_SLV0_REG, AK8963_ST1);
-    delay_ms(2);
-    MPU9250_WriteReg(MPU6500_I2C_SLV0_CTRL, MPU6500_I2C_SLVx_EN | 8);
-    delay_ms(2);
-
-    MPU9250_Mag_WriteReg(AK8963_CNTL1, 0x16);       // Continuous measurement mode 2
-    delay_ms(2);
-
-    MPU9250_WriteReg(MPU6500_I2C_SLV4_CTRL, 0x09);
-    delay_ms(2);
-    MPU9250_WriteReg(MPU6500_I2C_MST_DELAY_CTRL, 0x81);
-    delay_ms(100);
+    MPU9250_Mag_WriteReg(AK8963_InitData[i][1], AK8963_InitData[i][0]);
+    if(i == 2) {  /* Read sensitivity adjustment values */
+      delay_ms(2);
+      MPU9250_Mag_ReadRegs(AK8963_ASAX, ASA, 3);
+    }
   }
+
+  for(uint8_t i = 0; i < 3; i++) {
+    sensAdj[i] = (ASA[i] + 128) / 256.0;
+    IMUx->Data->magScale[i] *= sensAdj[i];
+  }
+//  printf("ASA = %i, %i, %i\r\n", ASA[0], ASA[1], ASA[2]);
+//  printf("sensAdj = %f, %f, %f\r\n", sensAdj[0], sensAdj[1], sensAdj[2]);
+
+  delay_ms(2);
+  MPU9250_WriteReg(MPU6500_I2C_MST_CTRL, 0x5D);
+  delay_ms(2);
+  MPU9250_WriteReg(MPU6500_I2C_SLV0_ADDR, AK8963_I2C_ADDR | 0x80);
+  delay_ms(2);
+  MPU9250_WriteReg(MPU6500_I2C_SLV0_REG, AK8963_ST1);
+  delay_ms(2);
+  MPU9250_WriteReg(MPU6500_I2C_SLV0_CTRL, MPU6500_I2C_SLVx_EN | 8);
+  delay_ms(2);
+  MPU9250_WriteReg(MPU6500_I2C_SLV4_CTRL, 0x09);
+  delay_ms(2);
+  MPU9250_WriteReg(MPU6500_I2C_MST_DELAY_CTRL, 0x81);
+  delay_ms(100);
 #endif
 
-#ifdef __USE_BAROMETER
-  if(IMUx->pIMU->LPS_PresTemp_Enable == LPS_PresTemp_ENABLE) {
-//    for(uint8_t i = 0; i < LPS25H_InitRegNum; i++) {
-//      Delay_1ms(2);
-//      LPS25H_WriteReg(LPS25H_InitData[i][1], LPS25H_InitData[i][0]);
-//    }
-  }
+#if defined(__USE_BAROMETER)
+//  for(uint8_t i = 0; i < LPS25H_InitRegNum; i++) {
+//    Delay_1ms(2);
+//    LPS25H_WriteReg(LPS25H_InitData[i][1], LPS25H_InitData[i][0]);
+//  }
 #endif
 
   IMU_SetSpeed(IMU_SPIx_SPEED_HIGH);
@@ -398,25 +299,22 @@ int8_t IMU_DeviceCheck( IMU_DataTypeDef *pIMU )
 {
   uint8_t deviceID = 0x00;
 
-  if(pIMU->MPU_GyrAcc_Enable == MPU_GyrAcc_ENABLE) {
-    deviceID = MPU9250_ReadReg(MPU6500_WHO_AM_I);
-    if(deviceID != MPU6500_DeviceID)
-      return ERROR;
+  deviceID = MPU9250_ReadReg(MPU6500_WHO_AM_I);
+  if(deviceID != MPU6500_DeviceID) {
+    return ERROR;
   }
 
-#ifdef __USE_MAGNETOMETER
-  if(pIMU->MPU_Mag_Enable == MPU_Mag_ENABLE) {
-    deviceID = MPU9250_Mag_ReadReg(AK8963_WIA);
-    if(deviceID != AK8963_DeviceID)
-      return ERROR;
+#if defined(__USE_MAGNETOMETER)
+  deviceID = MPU9250_Mag_ReadReg(AK8963_WIA);
+  if(deviceID != AK8963_DeviceID) {
+    return ERROR;
   }
 #endif
 
-#ifdef __USE_BAROMETER
-  if(pIMU->LPS_PresTemp_Enable == LPS_PresTemp_ENABLE) {
-    deviceID = LPS25HB_ReadReg(LPS25HB_WHO_AM_I);
-    if(deviceID != LPS25HB_DeviceID)
-      return ERROR;
+#if defined(__USE_BAROMETER)
+  deviceID = LPS25HB_ReadReg(LPS25HB_WHO_AM_I);
+  if(deviceID != LPS25HB_DeviceID) {
+    return ERROR;
   }
 #endif
 
@@ -424,203 +322,227 @@ int8_t IMU_DeviceCheck( IMU_DataTypeDef *pIMU )
 }
 /*====================================================================================================*/
 /*====================================================================================================*
-**函數 : IMU_GetData
+**函數 : IMU_InitData
+**功能 : Set to default
+**輸入 : *pIMU
+**輸出 : None
+**使用 : IMU_InitData(IMU);
+**====================================================================================================*/
+/*====================================================================================================*/
+void IMU_InitData( IMU_DataTypeDef *pIMU )
+{
+  memset(pIMU, 0, sizeof(IMU_DataTypeDef));
+
+  pIMU->gyrCalib[0] = 1.0f;
+  pIMU->gyrCalib[1] = 1.0f;
+  pIMU->gyrCalib[2] = 1.0f;
+
+  pIMU->accStrength = 1.0f;
+  pIMU->accCalib[0] = 1.0f;
+  pIMU->accCalib[4] = 1.0f;
+  pIMU->accCalib[8] = 1.0f;
+
+  pIMU->magStrength = 1.0f;
+  pIMU->magCalib[0] = 1.0f;
+  pIMU->magCalib[4] = 1.0f;
+  pIMU->magCalib[8] = 1.0f;
+}
+/*====================================================================================================*/
+/*====================================================================================================*
+**函數 : IMU_SetSensitivity
+**功能 : Set Sensitivity
+**輸入 : *IMUx
+**輸出 : None
+**使用 : IMU_SetSensitivity(IMUx);
+**====================================================================================================*/
+/*====================================================================================================*/
+void IMU_SetSensitivity( IMU_InitTypeDef *IMUx )
+{
+  float64_t scale = 0.0;
+
+  /* Set gyroscope sensitivity (dps/LSB) */
+#if defined(__USE_GYROSCOPE)
+  switch(IMUx->Init.MPU_Gyr_FullScale) {
+    case MPU_GyrFS_250dps:    scale = 250.0;    break;
+    case MPU_GyrFS_500dps:    scale = 500.0;    break;
+    case MPU_GyrFS_1000dps:   scale = 1000.0;   break;
+    case MPU_GyrFS_2000dps:   scale = 2000.0;   break;
+    default:                  scale = 0.0;      break;
+  }
+  scale = scale / 32768.0;
+  IMUx->Data->gyrScale[0] = scale;
+  IMUx->Data->gyrScale[1] = scale;
+  IMUx->Data->gyrScale[2] = scale;
+#else
+  IMUx->Data->gyrScale[0] = 0.0f;
+  IMUx->Data->gyrScale[1] = 0.0f;
+  IMUx->Data->gyrScale[2] = 0.0f;
+#endif
+
+  /* Set accelerometer sensitivity (g/LSB) */
+#if defined(__USE_ACCELEROMETER)
+  switch(IMUx->Init.MPU_Acc_FullScale) {
+    case MPU_AccFS_2g:    scale = 2.0;    break;
+    case MPU_AccFS_4g:    scale = 4.0;    break;
+    case MPU_AccFS_8g:    scale = 8.0;    break;
+    case MPU_AccFS_16g:   scale = 16.0;   break;
+    default:              scale = 0.0f;   break;
+  }
+  scale = scale / 32768.0;
+  IMUx->Data->accScale[0] = scale;
+  IMUx->Data->accScale[1] = scale;
+  IMUx->Data->accScale[2] = scale;
+#else
+  IMUx->Data->accScale[0] = 0.0f;
+  IMUx->Data->accScale[1] = 0.0f;
+  IMUx->Data->accScale[2] = 0.0f;
+#endif
+
+  /* Set magnetometer sensitivity (uT/LSB) */
+#if defined(__USE_MAGNETOMETER)
+  IMUx->Data->magScale[0] = 0.6;  /* +-4800uT */
+  IMUx->Data->magScale[1] = 0.6;
+  IMUx->Data->magScale[2] = 0.6;
+#else
+  IMUx->Data->magScale[0] = 0.0f;
+  IMUx->Data->magScale[1] = 0.0f;
+  IMUx->Data->magScale[2] = 0.0f;
+#endif
+
+  /* Set ictemperature sensitivity (degC/LSB) */
+#if defined(__USE_ICTEMPERATURE)
+  IMUx->Data->ictempScale  = 1.0 / 333.87;
+  IMUx->Data->ictempOffset = 21.0f;
+#else
+  IMUx->Data->ictempScale  = 0.0f;
+  IMUx->Data->ictempOffset = 0.0f;
+#endif
+
+  /* Set barometer sensitivity (degC/LSB, hPa/LSB) */
+#if defined(__USE_BAROMETER)
+  IMUx->Data->baroScale[0] = LPS25HB_T_degC;
+  IMUx->Data->baroScale[1] = LPS25HB_P_hPa;
+#else
+  IMUx->Data->baroScale[0] = 0.0f;
+  IMUx->Data->baroScale[1] = 0.0f;
+#endif
+}
+/*====================================================================================================*/
+/*====================================================================================================*
+**函數 : IMU_GetRawData
 **功能 : Get IMU Data
 **輸入 : *pIMU
 **輸出 : None
-**使用 : IMU_GetData(pIMU);
+**使用 : IMU_GetRawData(pIMU);
 **====================================================================================================*/
 /*====================================================================================================*/
-void IMU_GetData( IMU_DataTypeDef *pIMU )
+void IMU_GetRawData( IMU_DataTypeDef *pIMU )
 {
-  uint8_t tmpRead[22] = {0};
+  uint8_t readBuf[22] = {0};
 
-#ifdef __USE_MAGNETOMETER
-  if((pIMU->MPU_GyrAcc_Enable == MPU_GyrAcc_ENABLE) && (pIMU->MPU_Mag_Enable == MPU_Mag_ENABLE)) {
-    MPU9250_ReadRegs(MPU6500_ACCEL_XOUT_H, tmpRead, 22);    // Read Gyr, Acc, Mag
-  }
-  else {
+#if defined(__USE_MAGNETOMETER)
+  MPU9250_ReadRegs(MPU6500_ACCEL_XOUT_H, readBuf, 22);    /* Read Gyr, Acc, Mag */
+#else
+  MPU9250_ReadRegs(MPU6500_ACCEL_XOUT_H, readBuf, 14);    /* Read Gyr, Acc */
 #endif
 
-    if(pIMU->MPU_GyrAcc_Enable == MPU_GyrAcc_ENABLE) {
-      MPU9250_ReadRegs(MPU6500_ACCEL_XOUT_H, tmpRead, 14);    // Read Gyr, Acc
-    }
+  pIMU->gyrRaw[0] = (int16_t)(readBuf[8]  << 8) | readBuf[9];     /* Gyr.X */
+  pIMU->gyrRaw[1] = (int16_t)(readBuf[10] << 8) | readBuf[11];    /* Gyr.Y */
+  pIMU->gyrRaw[2] = (int16_t)(readBuf[12] << 8) | readBuf[13];    /* Gyr.Z */
+  pIMU->accRaw[0] = (int16_t)(readBuf[0]  << 8) | readBuf[1];     /* Acc.X */
+  pIMU->accRaw[1] = (int16_t)(readBuf[2]  << 8) | readBuf[3];     /* Acc.Y */
+  pIMU->accRaw[2] = (int16_t)(readBuf[4]  << 8) | readBuf[5];     /* Acc.Z */
+  pIMU->ictempRaw = (int16_t)(readBuf[6]  << 8) | readBuf[7];     /* ICTemp */
 
-#ifdef __USE_MAGNETOMETER
-    else if(pIMU->MPU_Mag_Enable == MPU_Mag_ENABLE) {
-      MPU9250_ReadRegs(MPU6500_EXT_SENS_DATA_00, tmpRead + 14, 8); // Read Mag
-    }
-  }
-#endif
-
-  if(pIMU->MPU_GyrAcc_Enable == MPU_GyrAcc_ENABLE) {
-    pIMU->Gyr[0] = (Byte16(int16_t, tmpRead[8],  tmpRead[9]));    // Gyr.X
-    pIMU->Gyr[1] = (Byte16(int16_t, tmpRead[10], tmpRead[11]));   // Gyr.Y
-    pIMU->Gyr[2] = (Byte16(int16_t, tmpRead[12], tmpRead[13]));   // Gyr.Z
-    pIMU->Acc[0] = (Byte16(int16_t, tmpRead[0],  tmpRead[1]));    // Acc.X
-    pIMU->Acc[1] = (Byte16(int16_t, tmpRead[2],  tmpRead[3]));    // Acc.Y
-    pIMU->Acc[2] = (Byte16(int16_t, tmpRead[4],  tmpRead[5]));    // Acc.Z
-    pIMU->ICTemp = (Byte16(int16_t, tmpRead[6],  tmpRead[7]));    // Temp
-  }
-
-#ifdef __USE_MAGNETOMETER
-  if(pIMU->MPU_Mag_Enable == MPU_Mag_ENABLE) {
-    if(!(!(tmpRead[14] & AK8963_STATUS_DRDY) || (tmpRead[14] & AK8963_STATUS_DOR) || (tmpRead[21] & AK8963_STATUS_HOFL))) {
-      pIMU->Mag[0] = (Byte16(int16_t, tmpRead[16], tmpRead[15]));   // Mag.X
-      pIMU->Mag[1] = (Byte16(int16_t, tmpRead[18], tmpRead[17]));   // Mag.Y
-      pIMU->Mag[2] = (Byte16(int16_t, tmpRead[20], tmpRead[19]));   // Mag.Z
-    }
+#if defined(__USE_MAGNETOMETER)
+  if(!(!(readBuf[14] & AK8963_STATUS_DRDY) || (readBuf[14] & AK8963_STATUS_DOR) || (readBuf[21] & AK8963_STATUS_HOFL))) {
+    pIMU->magRaw[0] = (int16_t)(readBuf[16] << 8) | readBuf[15];  /* Mag.X */
+    pIMU->magRaw[1] = (int16_t)(readBuf[18] << 8) | readBuf[17];  /* Mag.Y */
+    pIMU->magRaw[2] = (int16_t)(readBuf[20] << 8) | readBuf[19];  /* Mag.Z */
   }
 #endif
 
-#ifdef __USE_BAROMETER
-  if(pIMU->LPS_PresTemp_Enable == LPS_PresTemp_ENABLE) {
-//    LPS25H_ReadReg(LPS25H_WHO_AM_I, );
-  }
+#if defined(__USE_BAROMETER)
+//  LPS25H_ReadReg(LPS25H_WHO_AM_I, );
 #endif
 }
 /*====================================================================================================*/
 /*====================================================================================================*
-**函數 : IMU_GetDataCorr
-**功能 : Get Correction Data
+**函數 : IMU_GetCalibData
+**功能 : Get Calibration Data
 **輸入 : *pIMU
 **輸出 : None
-**使用 : IMU_GetDataCorr(pIMU);
+**使用 : IMU_GetCalibData(pIMU);
 **====================================================================================================*/
 /*====================================================================================================*/
-void IMU_GetDataCorr( IMU_DataTypeDef *pIMU )
+void IMU_GetCalibData( IMU_DataTypeDef *pIMU )
 {
-  float tmp[3] = {0};
+  float32_t tmp[3] = {0};
 
-  IMU_GetData(pIMU);
+  IMU_GetRawData(pIMU);
 
-  if(pIMU->MPU_GyrAcc_Enable == MPU_GyrAcc_ENABLE) {
-    pIMU->GyrC[0] = (pIMU->Gyr[0] - pIMU->GyrOffset[0]) * pIMU->GyrGain[0];    // Gyr.X
-    pIMU->GyrC[1] = (pIMU->Gyr[1] - pIMU->GyrOffset[1]) * pIMU->GyrGain[1];    // Gyr.Y
-    pIMU->GyrC[2] = (pIMU->Gyr[2] - pIMU->GyrOffset[2]) * pIMU->GyrGain[2];    // Gyr.Z
+  pIMU->gyrData[0] = (pIMU->gyrRaw[0] - pIMU->gyrOffset[0]) * pIMU->gyrCalib[0];   /* Gyr.X */
+  pIMU->gyrData[1] = (pIMU->gyrRaw[1] - pIMU->gyrOffset[1]) * pIMU->gyrCalib[1];   /* Gyr.Y */
+  pIMU->gyrData[2] = (pIMU->gyrRaw[2] - pIMU->gyrOffset[2]) * pIMU->gyrCalib[2];   /* Gyr.Z */
 
-//    tmp[0] = pIMU->Acc[0] - pIMU->AccOffset[0];   // Acc.X
-//    tmp[1] = pIMU->Acc[1] - pIMU->AccOffset[1];   // Acc.Y
-//    tmp[2] = pIMU->Acc[2] - pIMU->AccOffset[2];   // Acc.Z
+  pIMU->accData[0] = (pIMU->accCalib[0] * pIMU->accRaw[0] + pIMU->accCalib[1] * pIMU->accRaw[1] + pIMU->accCalib[2] * pIMU->accRaw[2]) + pIMU->accOffset[0];  /* Acc.X */
+  pIMU->accData[1] = (pIMU->accCalib[3] * pIMU->accRaw[0] + pIMU->accCalib[4] * pIMU->accRaw[1] + pIMU->accCalib[5] * pIMU->accRaw[2]) + pIMU->accOffset[1];  /* Acc.X */
+  pIMU->accData[2] = (pIMU->accCalib[6] * pIMU->accRaw[0] + pIMU->accCalib[7] * pIMU->accRaw[1] + pIMU->accCalib[8] * pIMU->accRaw[2]) + pIMU->accOffset[2];  /* Acc.X */
 
-//    pIMU->AccC[0] = pIMU->AccGain[0] * tmp[0] + pIMU->AccGain[1] * tmp[1] + pIMU->AccGain[2] * tmp[2];
-//    pIMU->AccC[1] = pIMU->AccGain[3] * tmp[0] + pIMU->AccGain[4] * tmp[1] + pIMU->AccGain[5] * tmp[2];
-//    pIMU->AccC[2] = pIMU->AccGain[6] * tmp[0] + pIMU->AccGain[7] * tmp[1] + pIMU->AccGain[8] * tmp[2];
+  pIMU->ictempData = pIMU->ictempRaw * pIMU->ictempScale + pIMU->ictempOffset;
 
-    tmp[0] = pIMU->Acc[0];   // Acc.X
-    tmp[1] = pIMU->Acc[1];   // Acc.Y
-    tmp[2] = pIMU->Acc[2];   // Acc.Z
-    pIMU->AccC[0] = pIMU->AccGain[0] * tmp[0] + pIMU->AccGain[1] * tmp[1] + pIMU->AccGain[2] * tmp[2] + pIMU->AccOffset[0];
-    pIMU->AccC[1] = pIMU->AccGain[3] * tmp[0] + pIMU->AccGain[4] * tmp[1] + pIMU->AccGain[5] * tmp[2] + pIMU->AccOffset[1];
-    pIMU->AccC[2] = pIMU->AccGain[6] * tmp[0] + pIMU->AccGain[7] * tmp[1] + pIMU->AccGain[8] * tmp[2] + pIMU->AccOffset[2];
-  }
+#if defined(__USE_MAGNETOMETER)
+  tmp[0] = pIMU->magRaw[0] - pIMU->magOffset[0];   /* Mag.X */
+  tmp[1] = pIMU->magRaw[1] - pIMU->magOffset[1];   /* Mag.Y */
+  tmp[2] = pIMU->magRaw[2] - pIMU->magOffset[2];   /* Mag.Z */
 
-#ifdef __USE_MAGNETOMETER
-    tmp[0] = pIMU->Mag[0] - pIMU->MagOffset[0];   // Mag.X
-    tmp[1] = pIMU->Mag[1] - pIMU->MagOffset[1];   // Mag.Y
-    tmp[2] = pIMU->Mag[2] - pIMU->MagOffset[2];   // Mag.Z
-
-    pIMU->MagC[0] = pIMU->MagGain[0] * tmp[0] + pIMU->MagGain[1] * tmp[1] + pIMU->MagGain[2] * tmp[2];
-    pIMU->MagC[1] = pIMU->MagGain[3] * tmp[0] + pIMU->MagGain[4] * tmp[1] + pIMU->MagGain[5] * tmp[2];
-    pIMU->MagC[2] = pIMU->MagGain[6] * tmp[0] + pIMU->MagGain[7] * tmp[1] + pIMU->MagGain[8] * tmp[2];
+  pIMU->magData[0] = pIMU->magCalib[0] * tmp[0] + pIMU->magCalib[1] * tmp[1] + pIMU->magCalib[2] * tmp[2];
+  pIMU->magData[1] = pIMU->magCalib[3] * tmp[0] + pIMU->magCalib[4] * tmp[1] + pIMU->magCalib[5] * tmp[2];
+  pIMU->magData[2] = pIMU->magCalib[6] * tmp[0] + pIMU->magCalib[7] * tmp[1] + pIMU->magCalib[8] * tmp[2];
 #endif
 
-#ifdef __USE_BAROMETER
-  if(pIMU->LPS_PresTemp_Enable == LPS_PresTemp_ENABLE) {
-    pIMU->Temp -= pIMU->TempOffset;   // Temp
-    pIMU->Pres -= pIMU->PresOffset;   // Pres
-  }
+#if defined(__USE_BAROMETER)
+    pIMU->baroData[0] = pIMU->baroData[0] - pIMU->TempOffset;   /* Baro.T */
+    pIMU->baroData[1] = pIMU->baroData[1] - pIMU->PresOffset;   /* Baro.P */
 #endif
 }
 /*====================================================================================================*/
 /*====================================================================================================*
-**函數 : IMU_GetDataCorrF
-**功能 : Get Correction Data
+**函數 : IMU_MergeScaleCalib
+**功能 : Merge scale and calibration
 **輸入 : *pIMU
 **輸出 : None
-**使用 : IMU_GetDataCorrF(pIMU);
+**使用 : IMU_MergeScaleCalib(pIMU);
 **====================================================================================================*/
 /*====================================================================================================*/
-void IMU_GetDataCorrF( IMU_DataTypeDef *pIMU )
+void IMU_MergeScaleCalib( IMU_DataTypeDef *pIMU )
 {
-  float tmp[3] = {0};
+  /* Merge gyroscope scale and calibration (dps/LSB) */
+  pIMU->gyrCalib[0] = pIMU->gyrCalib[0] * pIMU->gyrScale[0];
+  pIMU->gyrCalib[1] = pIMU->gyrCalib[1] * pIMU->gyrScale[1];
+  pIMU->gyrCalib[2] = pIMU->gyrCalib[2] * pIMU->gyrScale[2];
 
-  IMU_GetData(pIMU);
+  /* Merge accelerometer scale and sensitivity (g/LSB) */
+  pIMU->accCalib[0] = pIMU->accCalib[0] * pIMU->accScale[0];
+  pIMU->accCalib[1] = pIMU->accCalib[1] * pIMU->accScale[1];
+  pIMU->accCalib[2] = pIMU->accCalib[2] * pIMU->accScale[2];
+  pIMU->accCalib[3] = pIMU->accCalib[3] * pIMU->accScale[0];
+  pIMU->accCalib[4] = pIMU->accCalib[4] * pIMU->accScale[1];
+  pIMU->accCalib[5] = pIMU->accCalib[5] * pIMU->accScale[2];
+  pIMU->accCalib[6] = pIMU->accCalib[6] * pIMU->accScale[0];
+  pIMU->accCalib[7] = pIMU->accCalib[7] * pIMU->accScale[1];
+  pIMU->accCalib[8] = pIMU->accCalib[8] * pIMU->accScale[2];
 
-  if(pIMU->MPU_GyrAcc_Enable == MPU_GyrAcc_ENABLE) {
-    pIMU->GyrF[0] = (pIMU->Gyr[0] - pIMU->GyrOffset[0]) * pIMU->GyrGain[0];   // Gyr.X
-    pIMU->GyrF[1] = (pIMU->Gyr[1] - pIMU->GyrOffset[1]) * pIMU->GyrGain[1];   // Gyr.Y
-    pIMU->GyrF[2] = (pIMU->Gyr[2] - pIMU->GyrOffset[2]) * pIMU->GyrGain[2];   // Gyr.Z
-
-//    tmp[0] = pIMU->Acc[0] - pIMU->AccOffset[0];   // Acc.X
-//    tmp[1] = pIMU->Acc[1] - pIMU->AccOffset[1];   // Acc.Y
-//    tmp[2] = pIMU->Acc[2] - pIMU->AccOffset[2];   // Acc.Z
-
-//    pIMU->AccF[0] = pIMU->AccGain[0] * tmp[0] + pIMU->AccGain[1] * tmp[1] + pIMU->AccGain[2] * tmp[2];
-//    pIMU->AccF[1] = pIMU->AccGain[3] * tmp[0] + pIMU->AccGain[4] * tmp[1] + pIMU->AccGain[5] * tmp[2];
-//    pIMU->AccF[2] = pIMU->AccGain[6] * tmp[0] + pIMU->AccGain[7] * tmp[1] + pIMU->AccGain[8] * tmp[2];
-
-    pIMU->AccF[0] = pIMU->AccGain[0] * pIMU->Acc[0] + pIMU->AccGain[1] * pIMU->Acc[1] + pIMU->AccGain[2] * pIMU->Acc[2] + pIMU->AccOffset[0];
-    pIMU->AccF[1] = pIMU->AccGain[3] * pIMU->Acc[0] + pIMU->AccGain[4] * pIMU->Acc[1] + pIMU->AccGain[5] * pIMU->Acc[2] + pIMU->AccOffset[1];
-    pIMU->AccF[2] = pIMU->AccGain[6] * pIMU->Acc[0] + pIMU->AccGain[7] * pIMU->Acc[1] + pIMU->AccGain[8] * pIMU->Acc[2] + pIMU->AccOffset[2];
-
-    pIMU->ICTempF = pIMU->ICTemp * pIMU->ICTempSens;
-  }
-
-#ifdef __USE_MAGNETOMETER
-  if(pIMU->MPU_Mag_Enable == MPU_Mag_ENABLE) {
-    tmp[0] = pIMU->Mag[0] - pIMU->MagOffset[0];   // Mag.X
-    tmp[1] = pIMU->Mag[1] - pIMU->MagOffset[1];   // Mag.Y
-    tmp[2] = pIMU->Mag[2] - pIMU->MagOffset[2];   // Mag.Z
-
-    pIMU->MagF[0] = pIMU->MagGain[0] * tmp[0] + pIMU->MagGain[1] * tmp[1] + pIMU->MagGain[2] * tmp[2];
-    pIMU->MagF[1] = pIMU->MagGain[3] * tmp[0] + pIMU->MagGain[4] * tmp[1] + pIMU->MagGain[5] * tmp[2];
-    pIMU->MagF[2] = pIMU->MagGain[6] * tmp[0] + pIMU->MagGain[7] * tmp[1] + pIMU->MagGain[8] * tmp[2];
-  }
-#endif
-
-#ifdef __USE_BAROMETER
-  if(pIMU->LPS_PresTemp_Enable == LPS_PresTemp_ENABLE) {
-    pIMU->Temp -= pIMU->TempOffset;   // Temp
-    pIMU->Pres -= pIMU->PresOffset;   // Pres
-  }
-#endif
-}
-/*====================================================================================================*/
-/*====================================================================================================*
-**函數 : IMU_ConvToPhy
-**功能 : Convert Data
-**輸入 : *pIMU
-**輸出 : None
-**使用 : IMU_ConvToPhy(pIMU);
-**====================================================================================================*/
-/*====================================================================================================*/
-void IMU_ConvToPhy( IMU_DataTypeDef *pIMU )
-{
-  if(pIMU->MPU_GyrAcc_Enable == MPU_GyrAcc_ENABLE) {
-    pIMU->GyrF[0] = pIMU->Gyr[0] * pIMU->GyrSens;     // Gyr.X
-    pIMU->GyrF[1] = pIMU->Gyr[1] * pIMU->GyrSens;     // Gyr.Y
-    pIMU->GyrF[2] = pIMU->Gyr[2] * pIMU->GyrSens;     // Gyr.Z
-    pIMU->AccF[0] = pIMU->Acc[0] * pIMU->AccSens;     // Acc.X
-    pIMU->AccF[1] = pIMU->Acc[1] * pIMU->AccSens;     // Acc.Y
-    pIMU->AccF[2] = pIMU->Acc[2] * pIMU->AccSens;     // Acc.Z
-    pIMU->ICTempF = pIMU->ICTemp * pIMU->ICTempSens;  // ICTemp
-  }
-
-#ifdef __USE_MAGNETOMETER
-  if(pIMU->MPU_Mag_Enable == MPU_Mag_ENABLE) {
-    pIMU->MagF[0] = pIMU->Mag[0] * pIMU->MagSens;     // Mag.X
-    pIMU->MagF[1] = pIMU->Mag[1] * pIMU->MagSens;     // Mag.Y
-    pIMU->MagF[2] = pIMU->Mag[2] * pIMU->MagSens;     // Mag.Z
-  }
-#endif
-
-#ifdef __USE_BAROMETER
-  if(pIMU->LPS_PresTemp_Enable == LPS_PresTemp_ENABLE) {
-    pIMU->TempF = pIMU->Temp * pIMU->TempSens;        // Temp
-    pIMU->PresF = pIMU->Pres * pIMU->PresSens;        // Pres
-  }
-#endif
+  /* Merge magnetometer scale and sensitivity (uT/LSB) */
+  pIMU->magCalib[0] = pIMU->magCalib[0] * pIMU->magScale[0];
+  pIMU->magCalib[1] = pIMU->magCalib[1] * pIMU->magScale[1];
+  pIMU->magCalib[2] = pIMU->magCalib[2] * pIMU->magScale[2];
+  pIMU->magCalib[3] = pIMU->magCalib[3] * pIMU->magScale[0];
+  pIMU->magCalib[4] = pIMU->magCalib[4] * pIMU->magScale[1];
+  pIMU->magCalib[5] = pIMU->magCalib[5] * pIMU->magScale[2];
+  pIMU->magCalib[6] = pIMU->magCalib[6] * pIMU->magScale[0];
+  pIMU->magCalib[7] = pIMU->magCalib[7] * pIMU->magScale[1];
+  pIMU->magCalib[8] = pIMU->magCalib[8] * pIMU->magScale[2];
 }
 /*====================================================================================================*/
 /*====================================================================================================*
@@ -631,60 +553,67 @@ void IMU_ConvToPhy( IMU_DataTypeDef *pIMU )
 **使用 : IMU_PrintData(IMU);
 **====================================================================================================*/
 /*====================================================================================================*/
-#include "modules\serial.h"
 void IMU_PrintData( IMU_DataTypeDef *pIMU )
 {
   printf("\r\n");
   printf("- Print IMU Data -----------------\r\n");
-  printf("G : %i, %i, %i\r\n", pIMU->Gyr[0], pIMU->Gyr[1], pIMU->Gyr[2]);
-  printf("A : %i, %i, %i\r\n", pIMU->Acc[0], pIMU->Acc[1], pIMU->Acc[2]);
-#ifdef __USE_MAGNETOMETER
-  printf("M : %i, %i, %i\r\n", pIMU->Mag[0], pIMU->Mag[1], pIMU->Mag[2]);
+  printf("G_raw : %f, %f, %f\r\n", pIMU->gyrRaw[0], pIMU->gyrRaw[1], pIMU->gyrRaw[2]);
+  printf("A_raw : %f, %f, %f\r\n", pIMU->accRaw[0], pIMU->accRaw[1], pIMU->accRaw[2]);
+#if defined(__USE_MAGNETOMETER)
+  printf("M_raw : %f, %f, %f\r\n", pIMU->magRaw[0], pIMU->magRaw[1], pIMU->magRaw[2]);
 #endif
-#ifdef __USE_BAROMETER
-  printf("TP: %i, %i\r\n", pIMU->Temp, pIMU->Pres);
+  printf("T_raw : %f\r\n", pIMU->ictempRaw);
+#if defined(__USE_BAROMETER)
+  printf("B_raw : %f, %f\r\n", pIMU->baroRaw[0], pIMU->baroRaw[1]);
 #endif
+
   printf("\r\n");
-  printf("G_offset : %f, %f, %f\r\n", pIMU->GyrOffset[0], pIMU->GyrOffset[1], pIMU->GyrOffset[2]);
-  printf("A_offset : %f, %f, %f\r\n", pIMU->AccOffset[0], pIMU->AccOffset[1], pIMU->AccOffset[2]);
-#ifdef __USE_MAGNETOMETER
-  printf("M_offset : %f, %f, %f\r\n", pIMU->MagOffset[0], pIMU->MagOffset[1], pIMU->MagOffset[2]);
-  printf("M_ASA    : %i, %i, %i\r\n", pIMU->MagASA[0], pIMU->MagASA[1], pIMU->MagASA[2]);
+  printf("G_offset : %f, %f, %f\r\n", pIMU->gyrOffset[0], pIMU->gyrOffset[1], pIMU->gyrOffset[2]);
+  printf("A_offset : %f, %f, %f\r\n", pIMU->accOffset[0], pIMU->accOffset[1], pIMU->accOffset[2]);
+#if defined(__USE_MAGNETOMETER)
+  printf("M_offset : %f, %f, %f\r\n", pIMU->magOffset[0], pIMU->magOffset[1], pIMU->magOffset[2]);
 #endif
-#ifdef __USE_BAROMETER
-  printf("TP_offset: %i, %i\r\n", pIMU->TempOffset, pIMU->PresOffset);
-#endif
+  printf("T_offset : %f\r\n", pIMU->ictempOffset);
+
   printf("\r\n");
-  printf("G_f : %f, %f, %f\r\n", pIMU->GyrF[0], pIMU->GyrF[1], pIMU->GyrF[2]);
-  printf("A_f : %f, %f, %f\r\n", pIMU->AccF[0], pIMU->AccF[1], pIMU->AccF[2]);
-#ifdef __USE_MAGNETOMETER
-  printf("M_f : %f, %f, %f\r\n", pIMU->MagF[0], pIMU->MagF[1], pIMU->MagF[2]);
+  printf("G_data : %f, %f, %f\r\n", pIMU->gyrData[0], pIMU->gyrData[1], pIMU->gyrData[2]);
+  printf("A_data : %f, %f, %f\r\n", pIMU->accData[0], pIMU->accData[1], pIMU->accData[2]);
+#if defined(__USE_MAGNETOMETER)
+  printf("M_data : %f, %f, %f\r\n", pIMU->magData[0], pIMU->magData[1], pIMU->magData[2]);
 #endif
-#ifdef __USE_BAROMETER
-  printf("TP_f: %f, %f\r\n", pIMU->TempF, pIMU->PresF);
+  printf("T_data : %f\r\n", pIMU->ictempData);
+#if defined(__USE_BAROMETER)
+  printf("B_data : %f, %f\r\n", pIMU->baroData[0], pIMU->baroData[1]);
 #endif
+
   printf("\r\n");
-  printf("G_gain : %f, %f, %f\r\n", pIMU->GyrGain[0], pIMU->GyrGain[1], pIMU->GyrGain[2]);
-  printf("A_gain : %f, %f, %f\r\n", pIMU->AccGain[0], pIMU->AccGain[1], pIMU->AccGain[2]);
-  printf("         %f, %f, %f\r\n", pIMU->AccGain[3], pIMU->AccGain[4], pIMU->AccGain[5]);
-  printf("         %f, %f, %f\r\n", pIMU->AccGain[6], pIMU->AccGain[7], pIMU->AccGain[8]);
-#ifdef __USE_MAGNETOMETER
-  printf("M_gain : %f, %f, %f\r\n", pIMU->MagGain[0], pIMU->MagGain[1], pIMU->MagGain[2]);
-  printf("         %f, %f, %f\r\n", pIMU->MagGain[3], pIMU->MagGain[4], pIMU->MagGain[5]);
-  printf("         %f, %f, %f\r\n", pIMU->MagGain[6], pIMU->MagGain[7], pIMU->MagGain[8]);
+  printf("G_calib : %f, %f, %f\r\n", pIMU->gyrCalib[0], pIMU->gyrCalib[1], pIMU->gyrCalib[2]);
+  printf("A_calib : %f, %f, %f\r\n", pIMU->accCalib[0], pIMU->accCalib[1], pIMU->accCalib[2]);
+  printf("          %f, %f, %f\r\n", pIMU->accCalib[3], pIMU->accCalib[4], pIMU->accCalib[5]);
+  printf("          %f, %f, %f\r\n", pIMU->accCalib[6], pIMU->accCalib[7], pIMU->accCalib[8]);
+#if defined(__USE_MAGNETOMETER)
+  printf("M_calib : %f, %f, %f\r\n", pIMU->magCalib[0], pIMU->magCalib[1], pIMU->magCalib[2]);
+  printf("          %f, %f, %f\r\n", pIMU->magCalib[3], pIMU->magCalib[4], pIMU->magCalib[5]);
+  printf("          %f, %f, %f\r\n", pIMU->magCalib[6], pIMU->magCalib[7], pIMU->magCalib[8]);
 #endif
-#ifdef __USE_BAROMETER
-  printf("TP_gain: %f, %f\r\n", pIMU->TempGain, pIMU->PresGain);
-#endif
+
   printf("\r\n");
-  printf("G_sens : %f\r\n", pIMU->GyrSens);
-  printf("A_sens : %f\r\n", pIMU->AccSens);
-#ifdef __USE_MAGNETOMETER
-  printf("M_sens : %f\r\n", pIMU->MagSens);
+  printf("G_scale : %f, %f, %f\r\n", pIMU->gyrScale[0], pIMU->gyrScale[1], pIMU->gyrScale[2]);
+  printf("A_scale : %f, %f, %f\r\n", pIMU->accScale[0], pIMU->accScale[1], pIMU->accScale[2]);
+#if defined(__USE_MAGNETOMETER)
+  printf("M_scale : %f, %f, %f\r\n", pIMU->magScale[0], pIMU->magScale[1], pIMU->magScale[2]);
 #endif
-#ifdef __USE_BAROMETER
-  printf("TP_sens: %f, %f\r\n", pIMU->TempSens, pIMU->PresSens);
+  printf("T_scale : %f\r\n", pIMU->ictempScale);
+#if defined(__USE_BAROMETER)
+  printf("B_scale : %f, %f\r\n", pIMU->baroScale[0], pIMU->baroScale[1]);
 #endif
+
+  printf("\r\n");
+#if defined(__USE_MAGNETOMETER)
+  printf("A_strength : %f\r\n", pIMU->accStrength);
+  printf("M_strength : %f\r\n", pIMU->magStrength);
+#endif
+
   printf("----------------------------------\r\n");
   printf("\r\n\r\n");
 }

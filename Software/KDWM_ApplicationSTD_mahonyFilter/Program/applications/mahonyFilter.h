@@ -9,20 +9,17 @@
 /*====================================================================================================*/
 /*====================================================================================================*/
 typedef struct {
-  float sampleRate;
-  float sampleRateHelf;
+  float32_t sampleRate;
+  float32_t sampleRateHelf;
 
-  float ki;
-  float kp;
-
-  float acc[3];
-  float gyr[3];
+  float32_t ki;
+  float32_t kp;
 
   quaternion_t numQ;
   eulerAngle_t angE;
 
   IMU_DataTypeDef *imu;
-} mahonyFilter_t;
+} __attribute__((aligned)) mahonyFilter_t;
 /*====================================================================================================*/
 /*====================================================================================================*/
 void MahonyFilter_Init( mahonyFilter_t *mf );

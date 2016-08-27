@@ -5,8 +5,9 @@
 
 #include "stm32f4xx.h"
 
+#include "algorithms\mathUnit.h"
 #include "modules\mpu9250.h"
-#include "modules\lps25hb.h"
+//#include "modules\lps25hb.h"
 /*=====================================================================================================*/
 /*=====================================================================================================*/
 /*
@@ -49,108 +50,59 @@
 |  5  |     Reserved    |
 */
 
-typedef enum {
-  MPU_GyrAcc_ENABLE   = ENABLE,
-  MPU_GyrAcc_DISABLE  = DISABLE
-} MPU_GyrAccEN_TypeDef;
-
-#ifdef __USE_MAGNETOMETER
-typedef enum {
-  MPU_Mag_ENABLE      = ENABLE,
-  MPU_Mag_DISABLE     = DISABLE
-} MPU_MagEN_TypeDef;
-#endif
-
-#ifdef __USE_BAROMETER
-typedef enum {
-  LPS_PresTemp_ENABLE  = ENABLE,
-  LPS_PresTemp_DISABLE = DISABLE
-} LPS_PresTempEN_TypeDef;
-#endif
-
-typedef __IO struct {
-  MPU_GyrAccEN_TypeDef    MPU_GyrAcc_Enable;
-
-  int16_t Gyr[3];
-  int16_t Acc[3];
-  int16_t ICTemp;
-
-  float GyrOffset[3];
-  float AccOffset[3];
-  float GyrGain[3];
-  float AccGain[9];
-
-  float GyrSens;
-  float AccSens;
-  float ICTempSens;
-
-  float GyrC[3];
-  float AccC[3];
-
-  float GyrF[3];
-  float AccF[3];
-  float ICTempF;
-
-#ifdef __USE_MAGNETOMETER
-  MPU_MagEN_TypeDef       MPU_Mag_Enable;
-
-  int16_t Mag[3];
-  int16_t MagASA[3];
-
-  float MagOffset[3];
-  float MagGain[9];
-
-  float MagSens;
-
-  float MagC[3];
-
-  float MagF[3];
-#endif
-
-#ifdef __USE_BAROMETER
-  LPS_PresTempEN_TypeDef  LPS_PresTemp_Enable;
-
-  int16_t Temp;
-  int32_t Pres;
-
-  int16_t TempOffset;
-  int32_t PresOffset;
-  float TempGain;
-  float PresGain;
-
-  float TempSens;
-  float PresSens;
-
-  float TempF;
-  float PresF;
-#endif
-
-} IMU_DataTypeDef;
 
 typedef struct {
-  MPU_ConfigTypeDef InitMPU;
-#ifdef __USE_BAROMETER
-  LPS_ConfigTypeDef InitLPS;
-#endif
-  IMU_DataTypeDef *pIMU;
+  float32_t gyrRaw[3];      /* x = raw[0], y = raw[1], z = raw[2] */
+  float32_t accRaw[3];
+  float32_t magRaw[3];
+  float32_t ictempRaw;
+  float32_t baroRaw[2];     /* t = raw[0], p = raw[1] */
+
+  float32_t gyrData[3];
+  float32_t accData[3];
+  float32_t magData[3];
+  float32_t ictempData;
+  float32_t baroData[2];
+
+  float32_t gyrScale[3];
+  float32_t accScale[3];
+  float32_t magScale[3];
+  float32_t ictempScale;
+  float32_t baroScale[2];
+
+  float32_t gyrCalib[3];
+  float32_t accCalib[9];
+  float32_t magCalib[9];    /* c11 = calib[0], c12 = calib[1], c13 = calib[2],
+                               c21 = calib[3], c22 = calib[4], c23 = calib[5],
+                               c31 = calib[6], c32 = calib[7], c33 = calib[8] */
+
+  float32_t gyrOffset[3];
+  float32_t accOffset[3];
+  float32_t magOffset[3];
+  float32_t ictempOffset;
+
+  float32_t accStrength;
+  float32_t magStrength;
+
+} __attribute__((aligned(4))) IMU_DataTypeDef;
+
+typedef struct {
+  MPU_ConfigTypeDef Init;
+//  LPS_ConfigTypeDef InitLPS;
+  IMU_DataTypeDef *Data;
 } IMU_InitTypeDef;
 /*=====================================================================================================*/
 /*=====================================================================================================*/
-void   IMU_SetSpeed( uint8_t speedSel );
+void    IMU_Config( void );
+int8_t  IMU_Init( IMU_InitTypeDef *IMUx );
+int8_t  IMU_DeviceCheck( IMU_DataTypeDef *pIMU );
 
-void   IMU_ClaerData( IMU_DataTypeDef *pIMU );
-void   IMU_SetSensitivity( IMU_InitTypeDef *IMUx );
-
-void   IMU_Config( void );
-int8_t IMU_Init( IMU_InitTypeDef *IMUx );
-int8_t IMU_DeviceCheck( IMU_DataTypeDef *pIMU );
-
-void   IMU_GetData( IMU_DataTypeDef *pIMU );
-void   IMU_GetDataCorr( IMU_DataTypeDef *pIMU );
-void   IMU_GetDataCorrF( IMU_DataTypeDef *pIMU );
-void   IMU_ConvToPhy( IMU_DataTypeDef *pIMU );
-
-void   IMU_PrintData( IMU_DataTypeDef *pIMU );
+void    IMU_InitData( IMU_DataTypeDef *pIMU );
+void    IMU_SetSensitivity( IMU_InitTypeDef *IMUx );
+void    IMU_GetRawData( IMU_DataTypeDef *pIMU );
+void    IMU_GetCalibData( IMU_DataTypeDef *pIMU );
+void    IMU_MergeScaleCalib( IMU_DataTypeDef *pIMU );
+void    IMU_PrintData( IMU_DataTypeDef *pIMU );
 /*=====================================================================================================*/
 /*=====================================================================================================*/
 #endif

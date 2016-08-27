@@ -8,12 +8,12 @@
 /*====================================================================================================*/
 /*====================================================================================================*/
 typedef struct {
-  float q0;
-  float q1;
-  float q2;
-  float q3;
-  float rMat[3][3];
-} quaternion_t;
+  float32_t q0;
+  float32_t q1;
+  float32_t q2;
+  float32_t q3;
+  float32_t rMat[3][3];
+} __attribute__((aligned(4))) quaternion_t;
 /*====================================================================================================*/
 /*====================================================================================================*/
 void Quaternion_Clear( quaternion_t *pNumQ );
@@ -22,7 +22,7 @@ void Quaternion_ToAngE( quaternion_t *pNumQ, eulerAngle_t *pAngE );
 void Quaternion_UpdateRolMatrix( quaternion_t *pNumQ );
 void Quaternion_Multiply( quaternion_t *newQ, quaternion_t *nowQ, quaternion_t *oldQ );
 void Quaternion_Normalize( quaternion_t *pNumQ );
-void Quaternion_RungeKutta( quaternion_t *pNumQ, float gyrX, float gyrY, float gyrZ, float helfTimes );
+void Quaternion_RungeKutta( quaternion_t *pNumQ, float32_t *gyro, float32_t helfTime );
 /*====================================================================================================*/
 /*====================================================================================================*/
 #endif
