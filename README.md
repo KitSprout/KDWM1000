@@ -8,6 +8,8 @@ Description
 ========
 KDWM1000 是一款結合 [SmartIMU](https://github.com/Hom-Wang/SmartIMU)與 Decawave UWB DWM1000 模組的 Local Positioning System (LPS) 開發板，定位精度可達 10cm。
 
+> 日後將不再更新 KDWM1000，以 [UWB Node](https://github.com/KitSprout/UWB-Node) 來替代原本的版本。
+
 License
 ========
 * 硬體(Hardware)採用 [CC BY-SA 4.0](http://creativecommons.org/licenses/by-sa/4.0/deed.zh_TW)  方式授權 
